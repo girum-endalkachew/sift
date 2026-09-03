@@ -95,17 +95,17 @@ export default function WorkspacePage() {
   const hasDoneItems = items.some((i) => i.status === 'DONE');
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen">
       <Sidebar />
 
-      <main className="flex-1 max-w-4xl mx-auto px-8 py-10 space-y-9">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 md:px-8 py-6 md:py-10 space-y-6 md:space-y-9">
         {/* Header */}
-        <header className="flex items-center justify-between">
-          <div className="space-y-1.5">
-            <h1 className="text-3xl font-extrabold tracking-tight text-[#FCF8F9]">
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#FCF8F9]">
               Good afternoon, Girum.
             </h1>
-            <p className="text-sm text-[#A38F99]">
+            <p className="text-xs sm:text-sm text-[#A38F99]">
               Let's clear your head. Dump raw thoughts below and Sift will organize them.
             </p>
           </div>
@@ -113,7 +113,7 @@ export default function WorkspacePage() {
           {hasDoneItems && (
             <button
               onClick={handleClearCompleted}
-              className="flex items-center gap-1.5 text-xs text-[#A38F99] hover:text-[#F6E8EA] bg-[#2A1117]/60 hover:bg-[#2A1117] border border-[#D8B4BE]/15 px-3 py-2 rounded-xl transition"
+              className="self-start sm:self-auto flex items-center gap-1.5 text-xs text-[#A38F99] hover:text-[#F6E8EA] bg-[#2A1117]/60 hover:bg-[#2A1117] border border-[#D8B4BE]/15 px-3 py-2 rounded-xl transition"
               title="Clear completed tasks"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -225,7 +225,7 @@ export default function WorkspacePage() {
 
             {/* Empty State */}
             {items.length === 0 && (
-              <div className="text-center py-16 glass-panel rounded-2xl p-8">
+              <div className="text-center py-12 sm:py-16 glass-panel rounded-2xl p-6 sm:p-8">
                 <CheckCheck className="w-8 h-8 text-[#F6E8EA]/60 mx-auto mb-2.5" />
                 <p className="text-sm font-semibold text-[#FCF8F9]">Your mind is clear</p>
                 <p className="text-xs text-[#A38F99] mt-1 max-w-sm mx-auto leading-relaxed">
