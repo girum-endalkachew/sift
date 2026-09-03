@@ -8,6 +8,7 @@ import { ItemCardSkeleton } from '@/components/ui/Skeleton';
 import { CollapsibleSection } from '@/components/ui/CollapsibleSection';
 import { Item } from '@/types';
 import { CheckCheck, Inbox, Calendar, Layers, Trash2, Target } from 'lucide-react';
+import { ProductTour } from '@/components/ui/ProductTour';
 
 export default function WorkspacePage() {
   const [items, setItems] = useState<Item[]>([]);
@@ -89,7 +90,7 @@ export default function WorkspacePage() {
   const hasDoneItems = items.some((i) => i.status === 'DONE');
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen">`r`n      <ProductTour />
       <Sidebar />
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 md:px-8 py-6 md:py-10 space-y-6 md:space-y-9">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">

@@ -19,7 +19,6 @@ import {
   PanelLeftOpen,
   History,
   MessageSquarePlus,
-  ShieldCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSearch } from './SearchProvider';
@@ -77,6 +76,7 @@ export function Sidebar() {
     ? user.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
     : 'S';
 
+  // NO Admin link for regular users
   const navItems = [
     { label: 'Workspace', href: '/workspace', icon: Sparkles },
     { label: 'Inbox', href: '/inbox', icon: Inbox },
@@ -84,7 +84,6 @@ export function Sidebar() {
     { label: 'Schedule', href: '/schedule', icon: Calendar },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
     { label: 'History', href: '/history', icon: History },
-    { label: 'Admin', href: '/admin', icon: ShieldCheck },
   ];
 
   return (
@@ -134,11 +133,11 @@ export function Sidebar() {
               </Link>
             )}
             <div className={cn('flex items-center gap-1', collapsed && 'flex-col gap-2')}>
-              <button onClick={toggleCollapsed} className="p-1.5 text-muted hover:text-foreground bg-surface/70 border border-border rounded-lg transition" title={collapsed ? 'Open sidebar' : 'Close sidebar'}>
+              <button onClick={toggleCollapsed} className="p-1.5 text-muted hover:text-foreground bg-surface/70 border border-border rounded-lg transition">
                 {collapsed ? <PanelLeftOpen className="w-3.5 h-3.5" /> : <PanelLeftClose className="w-3.5 h-3.5" />}
               </button>
               {!collapsed && (
-                <button onClick={toggleTheme} className="p-1.5 text-muted hover:text-foreground bg-surface/70 border border-border rounded-lg transition" title="Toggle theme">
+                <button onClick={toggleTheme} className="p-1.5 text-muted hover:text-foreground bg-surface/70 border border-border rounded-lg transition">
                   {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5 text-amber-300" />}
                 </button>
               )}
@@ -208,7 +207,7 @@ export function Sidebar() {
               )}
             </div>
             {!collapsed && (
-              <button onClick={handleLogout} className="p-1.5 text-muted hover:text-rose-500 hover:bg-surface rounded-lg transition shrink-0" title="Sign Out">
+              <button onClick={handleLogout} className="p-1.5 text-muted hover:text-rose-500 hover:bg-surface rounded-lg transition shrink-0">
                 <LogOut className="w-3.5 h-3.5" />
               </button>
             )}

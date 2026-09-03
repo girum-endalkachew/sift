@@ -9,42 +9,70 @@ const PUBLIC_PATHS = [
   '/',
   '/login',
   '/signup',
+  '/admin/login',
   '/api/auth/login',
   '/api/auth/signup',
+  '/api/admin/login',
   '/api/sift',
   '/api/feedback',
 ];
 
-const PROTECTED_PATHS = [
-  '/workspace', 
-  '/inbox', 
-  '/tasks', 
-  '/schedule', 
-  '/projects', 
+const USER_PROTECTED = [
+  '/workspace',
+  '/inbox',
+  '/tasks',
+  '/schedule',
+  '/projects',
   '/history',
-  '/admin',
 ];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get('sift_session')?.value;
 
-  let isAuthenticated = false;
-  if (token) {
+  const userToken = request.cookies.get('sift_session')?.value;
+  const adminToken = request.cookies.get('sift_admin_session')?.value;
+
+  let isUser = false;
+  let isAdmin = false;
+
+  if (userToken) {
     try {
-      await jwtVerify(token, JWT_SECRET);
-      isAuthenticated = true;
-    } catch {
-      isAuthenticated = false;
-    }
+      await jwtVerify(userToken, JWT_SECRET);
+      isUser = true;
+    } catch {}
   }
 
-  if (isAuthenticated && (pathname === '/login' || pathname === '/signup')) {
+  if (adminToken) {
+    try {
+      const { payload } = await jwtVerify(adminToken, JWT_SECRET);
+      isAdmin = payload.role === 'admin';
+    } catch {}
+  }
+
+  // Admin area
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    if (pathname === '/admin/login') {
+      if (isAdmin) return NextResponse.redirect(new URL('/admin', request.url));
+      return NextResponse.next();
+    }
+    if (!isAdmin) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Normal auth pages
+  if (isUser && (pathname === '/login' || pathname === '/signup')) {
     return NextResponse.redirect(new URL('/workspace', request.url));
   }
 
-  const isProtected = PROTECTED_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'));
-  if (!isAuthenticated && isProtected) {
+  if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))) {
+    // POST /api/feedback is public; GET is checked in route itself
+    return NextResponse.next();
+  }
+
+  const needsUser = USER_PROTECTED.some((p) => pathname === p || pathname.startsWith(p + '/'));
+  if (needsUser && !isUser) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
