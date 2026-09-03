@@ -12,9 +12,11 @@ import {
   Search
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSearch } from './SearchProvider';
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { openSearch } = useSearch();
 
   const navItems = [
     { label: 'Workspace', href: '/', icon: Sparkles },
@@ -38,9 +40,12 @@ export function Sidebar() {
           </span>
         </div>
 
-        {/* Quick Search */}
+        {/* Quick Search — opens Command Palette */}
         <div className="px-1">
-          <button className="w-full flex items-center justify-between px-3 py-2 text-xs text-[#A38F99] bg-[#2A1117]/40 border border-[#D8B4BE]/15 rounded-xl hover:border-[#D8B4BE]/40 hover:text-[#FCF8F9] transition">
+          <button
+            onClick={openSearch}
+            className="w-full flex items-center justify-between px-3 py-2 text-xs text-[#A38F99] bg-[#2A1117]/40 border border-[#D8B4BE]/15 rounded-xl hover:border-[#D8B4BE]/40 hover:text-[#FCF8F9] transition"
+          >
             <span className="flex items-center gap-2">
               <Search className="w-3.5 h-3.5 text-[#D8B4BE]" />
               <span>Search...</span>

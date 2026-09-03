@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { SearchProvider } from '@/components/layout/SearchProvider';
 
 export const metadata: Metadata = {
   title: 'Sift — Organized Workspace',
@@ -13,8 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-canvas text-text-dark antialiased min-h-screen">
-        {children}
+      <body className="ambient-bg text-text-light antialiased min-h-screen">
+        <SearchProvider>
+          {children}
+        </SearchProvider>
       </body>
     </html>
   );
