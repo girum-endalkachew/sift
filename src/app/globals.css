@@ -12,13 +12,13 @@
 }
 
 :root {
-  /* LIGHT MODE - Sunset Blush Cloud Aesthetic (From your image) */
+  /* LIGHT MODE - Sunset Blush Cloud Aesthetic */
   --bg: #F0CFD5;
   --fg: #1A0A0F;
   --muted: #6C545C;
-  --accent: #8E606D;
-  --border-color: #FFFFFF;
-  --surface: #FFFFFF;
+  --accent: #7A424E;
+  --border-color: rgba(255, 255, 255, 0.6);
+  --surface: rgba(255, 255, 255, 0.55);
   --primary: #1A0A0F;
   --inverse: #F6E8EA;
 }
@@ -30,8 +30,8 @@
     --fg: #FCF8F9;
     --muted: #A38F99;
     --accent: #D8B4BE;
-    --border-color: #D8B4BE;
-    --surface: #2A1117;
+    --border-color: rgba(216, 180, 190, 0.2);
+    --surface: rgba(42, 17, 23, 0.55);
     --primary: #F6E8EA;
     --inverse: #1A0A0F;
   }
@@ -44,12 +44,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Adaptive Ambient Backgrounds */
+/* Sunset Cloud Gradient Background */
 .ambient-bg {
   background-color: var(--bg);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(255,255,255,0.6) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(216,180,190,0.5) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(255,255,255,0.7) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(220, 160, 180, 0.6) 0px, transparent 60%),
+    radial-gradient(at 50% 50%, rgba(255, 240, 245, 0.4) 0px, transparent 80%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -60,35 +61,38 @@ body {
   }
 }
 
-/* Adaptive Glassmorphism */
+/* High-End Glassmorphism Surfaces */
 .glass-panel {
-  background: color-mix(in srgb, var(--surface) 35%, transparent);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid color-mix(in srgb, var(--border-color) 35%, transparent);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.08);
+  background: var(--surface);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.08);
 }
 
 .glass-card {
-  background: color-mix(in srgb, var(--surface) 25%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid color-mix(in srgb, var(--border-color) 30%, transparent);
-  transition: all 0.2s ease-in-out;
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  background: color-mix(in srgb, var(--surface) 40%, transparent);
-  border-color: color-mix(in srgb, var(--border-color) 50%, transparent);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.08);
 }
 
 .glass-input {
-  background: color-mix(in srgb, var(--bg) 60%, transparent);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid color-mix(in srgb, var(--border-color) 40%, transparent);
+  background: var(--surface);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 }
 
 .glass-input:focus-within {
-  border-color: color-mix(in srgb, var(--border-color) 80%, transparent);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px 0 rgba(216, 180, 190, 0.2);
 }
