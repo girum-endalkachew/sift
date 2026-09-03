@@ -45,6 +45,12 @@ export default function WorkspacePage() {
     await fetch(`/api/items/${id}`, { method: 'DELETE' });
   };
 
+  const handleUpdate = (id: string, updatedData: Partial<Item>) => {
+    setItems((prev) =>
+      prev.map((i) => (i.id === id ? { ...i, ...updatedData } : i))
+    );
+  };
+
   const handleClearCompleted = async () => {
     setItems((prev) => prev.filter((i) => i.status !== 'DONE'));
     await fetch('/api/items/clear', {
@@ -99,7 +105,7 @@ export default function WorkspacePage() {
           {hasDoneItems && (
             <button
               onClick={handleClearCompleted}
-              className="self-start sm:self-auto flex items-center gap-1.5 text-xs text-muted hover:text-primary bg-surface/60 hover:bg-surface border border-border/15 px-3 py-2 rounded-xl transition"
+              className="self-start sm:self-auto flex items-center gap-1.5 text-xs text-muted hover:text-foreground bg-surface/60 hover:bg-surface border border-border px-3 py-2 rounded-xl transition"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear Done</span>
@@ -130,7 +136,13 @@ export default function WorkspacePage() {
                 </div>
                 <div className="space-y-2">
                   {groups.todayItems.map((item) => (
-                    <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />
+                    <ItemCard
+                      key={item.id}
+                      item={item}
+                      onToggleStatus={handleToggleStatus}
+                      onDelete={handleDelete}
+                      onUpdate={handleUpdate}
+                    />
                   ))}
                 </div>
               </section>
@@ -144,7 +156,13 @@ export default function WorkspacePage() {
                 </div>
                 <div className="space-y-2">
                   {groups.tomorrowItems.map((item) => (
-                    <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />
+                    <ItemCard
+                      key={item.id}
+                      item={item}
+                      onToggleStatus={handleToggleStatus}
+                      onDelete={handleDelete}
+                      onUpdate={handleUpdate}
+                    />
                   ))}
                 </div>
               </section>
@@ -158,7 +176,13 @@ export default function WorkspacePage() {
                 </div>
                 <div className="space-y-2">
                   {groups.upcomingItems.map((item) => (
-                    <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />
+                    <ItemCard
+                      key={item.id}
+                      item={item}
+                      onToggleStatus={handleToggleStatus}
+                      onDelete={handleDelete}
+                      onUpdate={handleUpdate}
+                    />
                   ))}
                 </div>
               </section>
@@ -172,7 +196,13 @@ export default function WorkspacePage() {
                 </div>
                 <div className="space-y-2">
                   {groups.inboxItems.map((item) => (
-                    <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />
+                    <ItemCard
+                      key={item.id}
+                      item={item}
+                      onToggleStatus={handleToggleStatus}
+                      onDelete={handleDelete}
+                      onUpdate={handleUpdate}
+                    />
                   ))}
                 </div>
               </section>
