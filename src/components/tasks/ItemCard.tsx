@@ -34,12 +34,12 @@ export function ItemCard({ item, onToggleStatus, onDelete }: ItemCardProps) {
       <div className="flex items-start gap-3.5 flex-1 min-w-0">
         <button
           onClick={() => onToggleStatus(item.id, item.status)}
-          className="mt-0.5 text-[#D8B4BE] hover:text-[#F6E8EA] transition"
+          className="mt-0.5 text-accent hover:text-primary transition"
         >
           {isDone ? (
-            <CheckCircle className="w-4 h-4 text-[#F6E8EA] fill-[#2A1117]" />
+            <CheckCircle className="w-4 h-4 text-primary fill-surface" />
           ) : (
-            <Circle className="w-4 h-4 text-[#D8B4BE]/70 hover:text-[#F6E8EA]" />
+            <Circle className="w-4 h-4 text-accent/70 hover:text-primary" />
           )}
         </button>
 
@@ -48,14 +48,14 @@ export function ItemCard({ item, onToggleStatus, onDelete }: ItemCardProps) {
             <span
               className={cn(
                 'text-sm font-medium leading-snug break-words',
-                isDone ? 'line-through text-[#A38F99]' : 'text-[#FCF8F9]'
+                isDone ? 'line-through text-muted' : 'text-foreground'
               )}
             >
               {item.title}
             </span>
 
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#2A1117]/80 border border-[#D8B4BE]/20 text-[#D8B4BE]">
-              <Icon className="w-2.5 h-2.5 text-[#F6E8EA]" />
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface/80 border border-border/20 text-accent">
+              <Icon className="w-2.5 h-2.5 text-primary" />
               {item.type}
             </span>
 
@@ -67,8 +67,8 @@ export function ItemCard({ item, onToggleStatus, onDelete }: ItemCardProps) {
           </div>
 
           {item.dueDate && (
-            <div className="flex items-center gap-1.5 text-xs text-[#A38F99]">
-              <Clock className="w-3 h-3 text-[#D8B4BE]" />
+            <div className="flex items-center gap-1.5 text-xs text-muted">
+              <Clock className="w-3 h-3 text-accent" />
               <span>{formatDateLabel(item.dueDate)}</span>
             </div>
           )}
@@ -78,7 +78,7 @@ export function ItemCard({ item, onToggleStatus, onDelete }: ItemCardProps) {
       <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-2">
         <button
           onClick={() => onDelete(item.id)}
-          className="p-1.5 text-[#A38F99] hover:text-rose-400 hover:bg-[#2A1117] rounded-lg transition"
+          className="p-1.5 text-muted hover:text-rose-400 hover:bg-surface rounded-lg transition"
           title="Delete item"
         >
           <Trash2 className="w-3.5 h-3.5" />

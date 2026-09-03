@@ -89,17 +89,17 @@ export default function WorkspacePage() {
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 md:px-8 py-6 md:py-10 space-y-6 md:space-y-9">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#FCF8F9]">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
               Good afternoon.
             </h1>
-            <p className="text-xs sm:text-sm text-[#A38F99]">
+            <p className="text-xs sm:text-sm text-muted">
               Let's clear your head. Dump raw thoughts below and Sift will organize them.
             </p>
           </div>
           {hasDoneItems && (
             <button
               onClick={handleClearCompleted}
-              className="self-start sm:self-auto flex items-center gap-1.5 text-xs text-[#A38F99] hover:text-[#F6E8EA] bg-[#2A1117]/60 hover:bg-[#2A1117] border border-[#D8B4BE]/15 px-3 py-2 rounded-xl transition"
+              className="self-start sm:self-auto flex items-center gap-1.5 text-xs text-muted hover:text-primary bg-surface/60 hover:bg-surface border border-border/15 px-3 py-2 rounded-xl transition"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear Done</span>
@@ -123,10 +123,10 @@ export default function WorkspacePage() {
           <div className="space-y-8 pb-16">
             {groups.todayItems.length > 0 && (
               <section className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
-                  <Calendar className="w-3.5 h-3.5 text-[#D8B4BE]" />
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                  <Calendar className="w-3.5 h-3.5 text-accent" />
                   <span>Today</span>
-                  <span className="text-[#A38F99] font-normal">({groups.todayItems.length})</span>
+                  <span className="text-muted font-normal">({groups.todayItems.length})</span>
                 </div>
                 <div className="space-y-2">
                   {groups.todayItems.map((item) => (
@@ -137,10 +137,10 @@ export default function WorkspacePage() {
             )}
             {groups.tomorrowItems.length > 0 && (
               <section className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
-                  <Calendar className="w-3.5 h-3.5 text-[#D8B4BE]" />
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                  <Calendar className="w-3.5 h-3.5 text-accent" />
                   <span>Tomorrow</span>
-                  <span className="text-[#A38F99] font-normal">({groups.tomorrowItems.length})</span>
+                  <span className="text-muted font-normal">({groups.tomorrowItems.length})</span>
                 </div>
                 <div className="space-y-2">
                   {groups.tomorrowItems.map((item) => (
@@ -151,10 +151,10 @@ export default function WorkspacePage() {
             )}
             {groups.upcomingItems.length > 0 && (
               <section className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
-                  <Layers className="w-3.5 h-3.5 text-[#D8B4BE]" />
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                  <Layers className="w-3.5 h-3.5 text-accent" />
                   <span>Upcoming</span>
-                  <span className="text-[#A38F99] font-normal">({groups.upcomingItems.length})</span>
+                  <span className="text-muted font-normal">({groups.upcomingItems.length})</span>
                 </div>
                 <div className="space-y-2">
                   {groups.upcomingItems.map((item) => (
@@ -165,10 +165,10 @@ export default function WorkspacePage() {
             )}
             {groups.inboxItems.length > 0 && (
               <section className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
-                  <Inbox className="w-3.5 h-3.5 text-[#D8B4BE]" />
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                  <Inbox className="w-3.5 h-3.5 text-accent" />
                   <span>Inbox & Ideas</span>
-                  <span className="text-[#A38F99] font-normal">({groups.inboxItems.length})</span>
+                  <span className="text-muted font-normal">({groups.inboxItems.length})</span>
                 </div>
                 <div className="space-y-2">
                   {groups.inboxItems.map((item) => (
@@ -179,9 +179,9 @@ export default function WorkspacePage() {
             )}
             {items.length === 0 && (
               <div className="text-center py-12 sm:py-16 glass-panel rounded-2xl p-6 sm:p-8">
-                <CheckCheck className="w-8 h-8 text-[#F6E8EA]/60 mx-auto mb-2.5" />
-                <p className="text-sm font-semibold text-[#FCF8F9]">Your mind is clear</p>
-                <p className="text-xs text-[#A38F99] mt-1 max-w-sm mx-auto leading-relaxed">
+                <CheckCheck className="w-8 h-8 text-primary/60 mx-auto mb-2.5" />
+                <p className="text-sm font-semibold text-foreground">Your mind is clear</p>
+                <p className="text-xs text-muted mt-1 max-w-sm mx-auto leading-relaxed">
                   Type any task, meeting, or random idea into the input above to sift it into your workspace.
                 </p>
               </div>

@@ -49,12 +49,12 @@ export default function InboxPage() {
       <Sidebar />
       <main className="flex-1 max-w-4xl mx-auto px-8 py-10 space-y-8">
         <header className="space-y-1.5">
-          <div className="flex items-center gap-2 text-[#D8B4BE] text-xs font-mono uppercase tracking-widest">
-            <InboxIcon className="w-4 h-4 text-[#F6E8EA]" />
+          <div className="flex items-center gap-2 text-accent text-xs font-mono uppercase tracking-widest">
+            <InboxIcon className="w-4 h-4 text-primary" />
             <span>Unprocessed Stream</span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[#FCF8F9]">Inbox</h1>
-          <p className="text-sm text-[#A38F99]">
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Inbox</h1>
+          <p className="text-sm text-muted">
             Raw captured ideas, notes, and unscheduled items awaiting action.
           </p>
         </header>
@@ -73,9 +73,9 @@ export default function InboxPage() {
 
           {!loading && items.length === 0 && (
             <div className="text-center py-16 glass-panel rounded-2xl p-8">
-              <CheckCheck className="w-8 h-8 text-[#F6E8EA]/60 mx-auto mb-2.5" />
-              <p className="text-sm font-semibold text-[#FCF8F9]">Inbox is completely clear</p>
-              <p className="text-xs text-[#A38F99] mt-1">All messy thoughts have been sifted or scheduled.</p>
+              <CheckCheck className="w-8 h-8 text-primary/60 mx-auto mb-2.5" />
+              <p className="text-sm font-semibold text-foreground">Inbox is completely clear</p>
+              <p className="text-xs text-muted mt-1">All messy thoughts have been sifted or scheduled.</p>
             </div>
           )}
         </div>

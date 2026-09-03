@@ -114,22 +114,22 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="w-full border-b border-[#D8B4BE]/10 bg-[#1A0A0F]/60 backdrop-blur-2xl sticky top-0 z-40">
+      <nav className="w-full border-b border-border/10 bg-background/60 backdrop-blur-2xl sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="w-3.5 h-3.5 rounded-full bg-[#F6E8EA] shadow-[0_0_12px_#F6E8EA]"></span>
-            <span className="text-xl font-bold tracking-wider text-[#FCF8F9]">SIFT</span>
+            <span className="w-3.5 h-3.5 rounded-full bg-primary shadow-[0_0_12px_var(--primary)]"></span>
+            <span className="text-xl font-bold tracking-wider text-foreground">SIFT</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/login"
-              className="text-xs sm:text-sm text-[#A38F99] hover:text-[#FCF8F9] px-3 py-2 transition"
+              className="text-xs sm:text-sm text-muted hover:text-foreground px-3 py-2 transition"
             >
               Sign in
             </Link>
             <Link
               href="/signup"
-              className="flex items-center gap-1.5 bg-[#F6E8EA] hover:bg-[#FCF8F9] text-[#1A0A0F] font-semibold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm transition shadow-[0_0_20px_rgba(246,232,234,0.25)]"
+              className="flex items-center gap-1.5 bg-primary hover:bg-[#FCF8F9] text-inverse font-semibold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm transition shadow-[0_0_20px_color-mix(in_srgb,var(--primary)_25%,transparent)]"
             >
               <span>Start</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -141,15 +141,15 @@ export default function LandingPage() {
       {/* HERO */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-16 sm:pt-24 pb-16 md:pb-24">
         <div className="max-w-3xl mb-10 md:mb-12">
-          <p className="text-[11px] uppercase tracking-[0.2em] font-mono text-[#D8B4BE] mb-5">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-mono text-accent mb-5">
             Mess → Sift → Clarity
           </p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-[#FCF8F9] leading-[1.05]">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.05]">
             Don&rsquo;t organize it.
             <br />
-            <span className="text-[#D8B4BE]">Dump it.</span>
+            <span className="text-accent">Dump it.</span>
           </h1>
-          <p className="mt-6 text-base sm:text-lg text-[#A38F99] leading-relaxed max-w-2xl">
+          <p className="mt-6 text-base sm:text-lg text-muted leading-relaxed max-w-2xl">
             Everything in your head. Written how you actually think.
             Sift turns messy sentences into structured tasks, events, and ideas —
             instantly.
@@ -158,7 +158,7 @@ export default function LandingPage() {
 
         {/* Example selector */}
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="text-[11px] uppercase tracking-widest text-[#A38F99] font-mono mr-1">
+          <span className="text-[11px] uppercase tracking-widest text-muted font-mono mr-1">
             Try
           </span>
           {EXAMPLES.map((ex, i) => (
@@ -168,8 +168,8 @@ export default function LandingPage() {
               className={cn(
                 'px-3 py-1.5 rounded-lg text-xs font-medium transition border',
                 activeExample === i
-                  ? 'bg-[#F6E8EA] text-[#1A0A0F] border-transparent'
-                  : 'text-[#A38F99] border-[#D8B4BE]/20 hover:text-[#FCF8F9] hover:border-[#D8B4BE]/40'
+                  ? 'bg-primary text-inverse border-transparent'
+                  : 'text-muted border-border/20 hover:text-foreground hover:border-border/40'
               )}
             >
               {ex.label}
@@ -179,9 +179,9 @@ export default function LandingPage() {
 
         {/* Interactive dump box (same design language as workspace HeroInput) */}
         <div className="w-full glass-input rounded-2xl p-5 sm:p-6 shadow-2xl">
-          <div className="flex items-center justify-between mb-3 text-xs text-[#A38F99]">
-            <span className="flex items-center gap-2 font-medium text-[#D8B4BE]">
-              <Sparkles className="w-4 h-4 text-[#F6E8EA]" />
+          <div className="flex items-center justify-between mb-3 text-xs text-muted">
+            <span className="flex items-center gap-2 font-medium text-accent">
+              <Sparkles className="w-4 h-4 text-primary" />
               Try it live
             </span>
             <span className="hidden sm:inline">Edit the text — then sift.</span>
@@ -191,27 +191,27 @@ export default function LandingPage() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={4}
-            className="w-full bg-transparent resize-none border-0 p-0 text-[#FCF8F9] placeholder:text-[#A38F99]/50 text-sm sm:text-base focus:ring-0 focus:outline-none leading-relaxed"
+            className="w-full bg-transparent resize-none border-0 p-0 text-foreground placeholder:text-muted/50 text-sm sm:text-base focus:ring-0 focus:outline-none leading-relaxed"
           />
 
-          <div className="flex items-center justify-between pt-4 mt-2 border-t border-[#D8B4BE]/15">
-            <span className="text-[11px] text-[#A38F99] bg-[#2A1117]/60 px-2.5 py-1 rounded-lg border border-[#D8B4BE]/15">
+          <div className="flex items-center justify-between pt-4 mt-2 border-t border-border/15">
+            <span className="text-[11px] text-muted bg-surface/60 px-2.5 py-1 rounded-lg border border-border/15">
               No signup needed to try
             </span>
             <button
               onClick={handleSift}
               disabled={!text.trim() || loading}
-              className="flex items-center gap-2 bg-[#F6E8EA] hover:bg-[#FCF8F9] text-[#1A0A0F] font-semibold disabled:opacity-30 disabled:cursor-not-allowed px-4 sm:px-5 py-2.5 rounded-xl text-xs transition duration-200 shadow-[0_0_20px_rgba(246,232,234,0.25)] hover:shadow-[0_0_25px_rgba(246,232,234,0.4)]"
+              className="flex items-center gap-2 bg-primary hover:bg-[#FCF8F9] text-inverse font-semibold disabled:opacity-30 disabled:cursor-not-allowed px-4 sm:px-5 py-2.5 rounded-xl text-xs transition duration-200 shadow-[0_0_20px_color-mix(in_srgb,var(--primary)_25%,transparent)] hover:shadow-[0_0_25px_rgba(246,232,234,0.4)]"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#1A0A0F]" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-inverse" />
                   <span>Sifting...</span>
                 </>
               ) : (
                 <>
                   <span>Sift</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-[#1A0A0F]" />
+                  <ArrowUpRight className="w-3.5 h-3.5 text-inverse" />
                 </>
               )}
             </button>
@@ -221,7 +221,7 @@ export default function LandingPage() {
         {/* Live result */}
         {groupedResults && (
           <div className="mt-8 space-y-6 animate-in fade-in duration-300">
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-[#D8B4BE] font-mono">
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-accent font-mono">
               <span className="w-8 h-px bg-[#D8B4BE]/30" />
               Organized
             </div>
@@ -245,21 +245,21 @@ export default function LandingPage() {
       </section>
 
       {/* Mess → Clarity */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24 border-t border-[#D8B4BE]/10">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24 border-t border-border/10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.2em] font-mono text-[#D8B4BE] mb-4">
+            <p className="text-[11px] uppercase tracking-[0.2em] font-mono text-accent mb-4">
               The Idea
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#FCF8F9] leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-tight">
               Your mind isn&rsquo;t a to-do app.
             </h2>
-            <p className="mt-5 text-[#A38F99] leading-relaxed">
+            <p className="mt-5 text-muted leading-relaxed">
               You think in sentences. In half-thoughts. In messy paragraphs at midnight.
               You shouldn&rsquo;t have to pick a project, category, tag, priority,
               due date, and status just to remember something.
             </p>
-            <p className="mt-4 text-[#A38F99] leading-relaxed">
+            <p className="mt-4 text-muted leading-relaxed">
               Sift reads what you wrote. It figures out what belongs where.
               You just dump.
             </p>
@@ -267,19 +267,19 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 gap-3">
             <div className="glass-panel p-5 rounded-2xl">
-              <p className="text-[10px] uppercase tracking-widest text-[#A38F99] font-mono mb-2">
+              <p className="text-[10px] uppercase tracking-widest text-muted font-mono mb-2">
                 What you write
               </p>
-              <p className="text-sm text-[#FCF8F9] leading-relaxed">
+              <p className="text-sm text-foreground leading-relaxed">
                 &ldquo;Meeting with Sarah tomorrow at 4, need to finish the deck tonight,
                 remind me to reply to Marcus, exam Friday.&rdquo;
               </p>
             </div>
             <div className="flex justify-center">
-              <ArrowRight className="w-4 h-4 text-[#D8B4BE] rotate-90" />
+              <ArrowRight className="w-4 h-4 text-accent rotate-90" />
             </div>
             <div className="glass-panel p-5 rounded-2xl space-y-2">
-              <p className="text-[10px] uppercase tracking-widest text-[#A38F99] font-mono mb-2">
+              <p className="text-[10px] uppercase tracking-widest text-muted font-mono mb-2">
                 What Sift builds
               </p>
               <MiniItem type="EVENT" title="Meeting with Sarah" hint="Tomorrow · 4:00 PM" />
@@ -292,12 +292,12 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24 border-t border-[#D8B4BE]/10">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24 border-t border-border/10">
         <div className="max-w-2xl mb-10 md:mb-14">
-          <p className="text-[11px] uppercase tracking-[0.2em] font-mono text-[#D8B4BE] mb-4">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-mono text-accent mb-4">
             How it works
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#FCF8F9] leading-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-tight">
             Three steps. No configuration.
           </h2>
         </div>
@@ -322,32 +322,32 @@ export default function LandingPage() {
       </section>
 
       {/* Real product preview */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24 border-t border-[#D8B4BE]/10">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24 border-t border-border/10">
         <div className="max-w-2xl mb-8 md:mb-12">
-          <p className="text-[11px] uppercase tracking-[0.2em] font-mono text-[#D8B4BE] mb-4">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-mono text-accent mb-4">
             Your workspace
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#FCF8F9] leading-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-tight">
             A calm command center.
           </h2>
-          <p className="mt-5 text-[#A38F99] leading-relaxed">
+          <p className="mt-5 text-muted leading-relaxed">
             Not a dashboard. Not a Kanban board. Just what matters, when it matters.
           </p>
         </div>
 
         <div className="glass-panel rounded-2xl p-4 sm:p-6 md:p-8 space-y-6">
-          <div className="flex items-center justify-between border-b border-[#D8B4BE]/10 pb-3">
+          <div className="flex items-center justify-between border-b border-border/10 pb-3">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#F6E8EA]"></span>
-              <span className="text-xs font-mono tracking-widest text-[#D8B4BE]">SIFT / WORKSPACE</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-primary"></span>
+              <span className="text-xs font-mono tracking-widest text-accent">SIFT / WORKSPACE</span>
             </div>
-            <span className="text-[10px] text-[#A38F99] font-mono">preview</span>
+            <span className="text-[10px] text-muted font-mono">preview</span>
           </div>
 
           <div className="space-y-5">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA] mb-2">
-                <CalendarIcon className="w-3.5 h-3.5 text-[#D8B4BE]" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-2">
+                <CalendarIcon className="w-3.5 h-3.5 text-accent" />
                 Today
               </div>
               <div className="space-y-2">
@@ -357,8 +357,8 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA] mb-2">
-                <CalendarIcon className="w-3.5 h-3.5 text-[#D8B4BE]" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-2">
+                <CalendarIcon className="w-3.5 h-3.5 text-accent" />
                 Tomorrow
               </div>
               <div className="space-y-2">
@@ -367,8 +367,8 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA] mb-2">
-                <InboxIcon className="w-3.5 h-3.5 text-[#D8B4BE]" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-2">
+                <InboxIcon className="w-3.5 h-3.5 text-accent" />
                 Inbox & Ideas
               </div>
               <div className="space-y-2">
@@ -381,27 +381,27 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-20 md:py-28 border-t border-[#D8B4BE]/10">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-20 md:py-28 border-t border-border/10">
         <div className="max-w-2xl">
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-[#FCF8F9] leading-tight">
+          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
             Clear your head.
             <br />
-            <span className="text-[#D8B4BE]">Keep the momentum.</span>
+            <span className="text-accent">Keep the momentum.</span>
           </h2>
-          <p className="mt-5 text-[#A38F99] leading-relaxed">
+          <p className="mt-5 text-muted leading-relaxed">
             Create a free workspace. Dump your first mess. See what Sift does.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
               href="/signup"
-              className="flex items-center gap-2 bg-[#F6E8EA] hover:bg-[#FCF8F9] text-[#1A0A0F] font-semibold px-5 py-3 rounded-xl text-sm transition shadow-[0_0_20px_rgba(246,232,234,0.25)]"
+              className="flex items-center gap-2 bg-primary hover:bg-[#FCF8F9] text-inverse font-semibold px-5 py-3 rounded-xl text-sm transition shadow-[0_0_20px_color-mix(in_srgb,var(--primary)_25%,transparent)]"
             >
               <span>Create your workspace</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/login"
-              className="text-sm text-[#A38F99] hover:text-[#FCF8F9] px-4 py-3 transition"
+              className="text-sm text-muted hover:text-foreground px-4 py-3 transition"
             >
               I already have an account
             </Link>
@@ -410,16 +410,16 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#D8B4BE]/10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-[#A38F99]">
+      <footer className="border-t border-border/10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-muted">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#F6E8EA]"></span>
-            <span className="font-mono tracking-widest text-[#D8B4BE]">SIFT</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-primary"></span>
+            <span className="font-mono tracking-widest text-accent">SIFT</span>
             <span>· Built by Girum Endalkachew</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="hover:text-[#FCF8F9]">Sign in</Link>
-            <Link href="/signup" className="hover:text-[#FCF8F9]">Get started</Link>
+            <Link href="/login" className="hover:text-foreground">Sign in</Link>
+            <Link href="/signup" className="hover:text-foreground">Get started</Link>
           </div>
         </div>
       </footer>
@@ -440,10 +440,10 @@ function ResultGroup({
 }) {
   return (
     <div className="glass-panel rounded-2xl p-4 sm:p-5 space-y-3">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
-        <Icon className="w-3.5 h-3.5 text-[#D8B4BE]" />
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+        <Icon className="w-3.5 h-3.5 text-accent" />
         <span>{label}</span>
-        <span className="text-[#A38F99] font-normal">({items.length})</span>
+        <span className="text-muted font-normal">({items.length})</span>
       </div>
       <div className="space-y-2">
         {items.map((r, i) => (
@@ -458,19 +458,19 @@ function ResultItem({ item }: { item: SiftedResult }) {
   const Icon = typeIcons[item.type] || CheckCircle2;
   return (
     <div className="flex items-start gap-3 p-3 rounded-xl glass-card">
-      <div className="w-8 h-8 rounded-lg bg-[#2A1117]/80 flex items-center justify-center shrink-0">
-        <Icon className="w-3.5 h-3.5 text-[#D8B4BE]" />
+      <div className="w-8 h-8 rounded-lg bg-surface/80 flex items-center justify-center shrink-0">
+        <Icon className="w-3.5 h-3.5 text-accent" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-[#FCF8F9] leading-snug break-words">
+        <p className="text-sm font-medium text-foreground leading-snug break-words">
           {item.title}
         </p>
         <div className="flex items-center gap-2 mt-1 flex-wrap">
-          <span className="text-[10px] font-semibold text-[#D8B4BE] uppercase tracking-wide">
+          <span className="text-[10px] font-semibold text-accent uppercase tracking-wide">
             {item.type}
           </span>
           {item.dueDate && (
-            <span className="text-[10px] text-[#A38F99]">
+            <span className="text-[10px] text-muted">
               {formatDateLabel(item.dueDate)}
             </span>
           )}
@@ -489,14 +489,14 @@ function MiniItem({ type, title, hint }: { type: ItemType; title: string; hint: 
   const Icon = typeIcons[type] || CheckCircle2;
   return (
     <div className="flex items-center gap-3 p-2.5 rounded-lg glass-card">
-      <div className="w-7 h-7 rounded-md bg-[#2A1117]/80 flex items-center justify-center shrink-0">
-        <Icon className="w-3.5 h-3.5 text-[#D8B4BE]" />
+      <div className="w-7 h-7 rounded-md bg-surface/80 flex items-center justify-center shrink-0">
+        <Icon className="w-3.5 h-3.5 text-accent" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-[#FCF8F9] font-medium truncate">{title}</p>
-        <p className="text-[10px] text-[#A38F99]">{hint}</p>
+        <p className="text-sm text-foreground font-medium truncate">{title}</p>
+        <p className="text-[10px] text-muted">{hint}</p>
       </div>
-      <span className="text-[9px] font-semibold text-[#D8B4BE] uppercase tracking-wide">
+      <span className="text-[9px] font-semibold text-accent uppercase tracking-wide">
         {type}
       </span>
     </div>
@@ -507,15 +507,15 @@ function PreviewItem({ type, title, hint }: { type: ItemType; title: string; hin
   const Icon = typeIcons[type] || CheckCircle2;
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl glass-card">
-      <div className="w-4 h-4 rounded-full border border-[#D8B4BE]/50" />
+      <div className="w-4 h-4 rounded-full border border-border/50" />
       <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
-        <span className="text-sm font-medium text-[#FCF8F9]">{title}</span>
-        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#2A1117]/80 border border-[#D8B4BE]/20 text-[#D8B4BE]">
-          <Icon className="w-2.5 h-2.5 text-[#F6E8EA]" />
+        <span className="text-sm font-medium text-foreground">{title}</span>
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-surface/80 border border-border/20 text-accent">
+          <Icon className="w-2.5 h-2.5 text-primary" />
           {type}
         </span>
       </div>
-      <span className="text-[10px] text-[#A38F99]">{hint}</span>
+      <span className="text-[10px] text-muted">{hint}</span>
     </div>
   );
 }
@@ -531,9 +531,9 @@ function StepCard({
 }) {
   return (
     <div className="glass-panel rounded-2xl p-5 sm:p-6 space-y-3">
-      <span className="text-xs font-mono tracking-widest text-[#D8B4BE]">{number}</span>
-      <h3 className="text-lg font-bold text-[#FCF8F9]">{title}</h3>
-      <p className="text-sm text-[#A38F99] leading-relaxed">{body}</p>
+      <span className="text-xs font-mono tracking-widest text-accent">{number}</span>
+      <h3 className="text-lg font-bold text-foreground">{title}</h3>
+      <p className="text-sm text-muted leading-relaxed">{body}</p>
     </div>
   );
 }
