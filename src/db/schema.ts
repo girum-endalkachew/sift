@@ -19,7 +19,6 @@ export const projects = sqliteTable('projects', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
-// Raw dump sessions (history of messy inputs)
 export const dumps = sqliteTable('dumps', {
   id: text('id').primaryKey(),
   userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
@@ -53,4 +52,12 @@ export const tags = sqliteTable('tags', {
 export const itemTags = sqliteTable('item_tags', {
   itemId: text('item_id').notNull().references(() => items.id, { onDelete: 'cascade' }),
   tagId: text('tag_id').notNull().references(() => tags.id, { onDelete: 'cascade' }),
+});
+
+export const feedback = sqliteTable('feedback', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').references(() => users.id, { onDelete: 'set null' }),
+  email: text('email'),
+  message: text('message').notNull(),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
 });

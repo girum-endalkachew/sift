@@ -12,11 +12,9 @@ let url: string;
 let authToken: string | undefined;
 
 if (tursoUrl) {
-  // Production / Turso
   url = tursoUrl;
   authToken = tursoToken;
 } else {
-  // Local only
   const dbDir = path.join(process.cwd(), 'data');
   if (!isServerless && !fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir, { recursive: true });
