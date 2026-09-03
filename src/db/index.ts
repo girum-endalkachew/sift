@@ -1,16 +1,33 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/libsql';
+import { createClient } from '@libsql/client';
 import * as schema from './schema';
 import path from 'path';
 import fs from 'fs';
 
-const dbDir = path.join(process.cwd(), 'data');
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true });
+const tursoUrl = process.env.TURSO_DATABASE_URL;
+const tursoToken = process.env.TURSO_AUTH_TOKEN;
+const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+
+let url: string;
+let authToken: string | undefined;
+
+if (tursoUrl) {
+  // Production / Turso
+  url = tursoUrl;
+  authToken = tursoToken;
+} else {
+  // Local only
+  const dbDir = path.join(process.cwd(), 'data');
+  if (!isServerless && !fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
+  url = `file:${path.join(dbDir, 'sift.db')}`;
 }
 
-const sqlitePath = path.join(dbDir, 'sift.db');
-const sqlite = new Database(sqlitePath);
+export const client = createClient({
+  url,
+  authToken,
+});
 
-export const db = drizzle(sqlite, { schema });
+export const db = drizzle(client, { schema });
 export * from './schema';
