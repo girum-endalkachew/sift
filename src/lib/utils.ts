@@ -8,27 +8,25 @@ export function cn(...inputs: ClassValue[]) {
 export function formatDateLabel(dateString: string | null): string {
   if (!dateString) return '';
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
   const now = new Date();
 
-  const isToday =
-    date.getDate() === now.getDate() &&
-    date.getMonth() === now.getMonth() &&
-    date.getFullYear() === now.getFullYear();
+  // Midnight comparison for calendar day check
+  const dStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const nowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const isTomorrow =
-    date.getDate() === tomorrow.getDate() &&
-    date.getMonth() === tomorrow.getMonth() &&
-    date.getFullYear() === tomorrow.getFullYear();
+  const diffDays = Math.round((dStart.getTime() - nowStart.getTime()) / (1000 * 3600 * 24));
 
+  // Time extraction
   const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0;
   const timeStr = hasTime
     ? date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
     : '';
 
-  if (isToday) return timeStr ? `Today at ${timeStr}` : 'Today';
-  if (isTomorrow) return timeStr ? `Tomorrow at ${timeStr}` : 'Tomorrow';
+  if (diffDays === 0) return timeStr ? `Today at ${timeStr}` : 'Today';
+  if (diffDays === 1) return timeStr ? `Tomorrow at ${timeStr}` : 'Tomorrow';
+  if (diffDays === -1) return timeStr ? `Yesterday at ${timeStr}` : 'Yesterday';
 
   const dayName = date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
   return timeStr ? `${dayName} at ${timeStr}` : dayName;
