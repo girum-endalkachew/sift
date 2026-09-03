@@ -12,29 +12,27 @@
 }
 
 :root {
-  /* LIGHT MODE - Sunset Blush Cloud Aesthetic */
-  --bg: #F0CFD5;
-  --fg: #1A0A0F;
-  --muted: #6C545C;
-  --accent: #7A424E;
-  --border-color: rgba(255, 255, 255, 0.6);
-  --surface: rgba(255, 255, 255, 0.55);
+  /* LIGHT MODE - Crisp Luminous Blush & Warm White Canvas */
+  --bg: #FBF4F6;
+  --fg: #24171A;
+  --muted: #806D73;
+  --accent: #A3485E;
+  --border-color: rgba(216, 180, 190, 0.45);
+  --surface: rgba(255, 255, 255, 0.85);
   --primary: #1A0A0F;
-  --inverse: #F6E8EA;
+  --inverse: #FCF8F9;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* DARK MODE - Deep Burgundy */
-    --bg: #1A0A0F;
-    --fg: #FCF8F9;
-    --muted: #A38F99;
-    --accent: #D8B4BE;
-    --border-color: rgba(216, 180, 190, 0.2);
-    --surface: rgba(42, 17, 23, 0.55);
-    --primary: #F6E8EA;
-    --inverse: #1A0A0F;
-  }
+[data-theme="dark"] {
+  /* DARK MODE - Deep Burgundy */
+  --bg: #1A0A0F;
+  --fg: #FCF8F9;
+  --muted: #A38F99;
+  --accent: #D8B4BE;
+  --border-color: rgba(216, 180, 190, 0.2);
+  --surface: rgba(42, 17, 23, 0.55);
+  --primary: #F6E8EA;
+  --inverse: #1A0A0F;
 }
 
 body {
@@ -44,55 +42,52 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Sunset Cloud Gradient Background */
+/* Ambient Radial Background */
 .ambient-bg {
   background-color: var(--bg);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(255,255,255,0.7) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(220, 160, 180, 0.6) 0px, transparent 60%),
-    radial-gradient(at 50% 50%, rgba(255, 240, 245, 0.4) 0px, transparent 80%);
+    radial-gradient(at 0% 0%, rgba(246, 232, 234, 0.8) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(216, 180, 190, 0.3) 0px, transparent 60%);
 }
 
-@media (prefers-color-scheme: dark) {
-  .ambient-bg {
-    background-image: 
-      radial-gradient(at 10% 15%, rgba(216, 180, 190, 0.12) 0px, transparent 45%),
-      radial-gradient(at 90% 80%, rgba(120, 20, 40, 0.3) 0px, transparent 50%);
-  }
+[data-theme="dark"] .ambient-bg {
+  background-image: 
+    radial-gradient(at 10% 15%, rgba(216, 180, 190, 0.12) 0px, transparent 45%),
+    radial-gradient(at 90% 80%, rgba(120, 20, 40, 0.3) 0px, transparent 50%);
 }
 
-/* High-End Glassmorphism Surfaces */
+/* Glassmorphism Surfaces */
 .glass-panel {
   background: var(--surface);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-color);
-  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 32px 0 rgba(36, 23, 26, 0.05);
 }
 
 .glass-card {
   background: var(--surface);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 16px 0 rgba(36, 23, 26, 0.03);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 6px 20px 0 rgba(36, 23, 26, 0.07);
 }
 
 .glass-input {
   background: var(--surface);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-color);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px 0 rgba(36, 23, 26, 0.04);
 }
 
 .glass-input:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 20px 0 rgba(216, 180, 190, 0.2);
+  box-shadow: 0 0 20px 0 rgba(216, 180, 190, 0.3);
 }
