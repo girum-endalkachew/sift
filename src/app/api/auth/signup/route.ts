@@ -46,13 +46,16 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: 30 * 24 * 60 * 60,
       path: '/',
     });
 
     return response;
-  } catch (error) {
-    console.error('Signup error:', error);
-    return NextResponse.json({ success: false, error: 'Signup failed' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Signup error details:', error);
+    return NextResponse.json({ 
+      success: false, 
+      error: error?.message || 'Database error during signup' 
+    }, { status: 500 });
   }
 }
