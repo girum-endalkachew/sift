@@ -1,22 +1,43 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   Inbox, 
   CheckCircle2, 
   Calendar, 
   FolderKanban, 
   Sparkles,
-  Search
+  Search,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSearch } from './SearchProvider';
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { openSearch } = useSearch();
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.user) setUser(data.user);
+      });
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/login');
+    router.refresh();
+  };
+
+  const initials = user?.name
+    ? user.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'S';
 
   const navItems = [
     { label: 'Workspace', href: '/', icon: Sparkles },
@@ -29,7 +50,6 @@ export function Sidebar() {
   return (
     <aside className="w-64 border-r border-[#D8B4BE]/15 bg-[#1A0A0F]/60 backdrop-blur-2xl min-h-screen flex flex-col justify-between p-5 select-none">
       <div className="space-y-6">
-        {/* Brand Header */}
         <div className="flex items-center justify-between px-2">
           <Link href="/" className="flex items-center space-x-2.5">
             <span className="w-3.5 h-3.5 rounded-full bg-[#F6E8EA] shadow-[0_0_12px_#F6E8EA]"></span>
@@ -40,7 +60,6 @@ export function Sidebar() {
           </span>
         </div>
 
-        {/* Quick Search — opens Command Palette */}
         <div className="px-1">
           <button
             onClick={openSearch}
@@ -54,7 +73,6 @@ export function Sidebar() {
           </button>
         </div>
 
-        {/* Navigation links */}
         <nav className="space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -80,17 +98,23 @@ export function Sidebar() {
         </nav>
       </div>
 
-      {/* User Footer */}
       <div className="pt-4 border-t border-[#D8B4BE]/15 px-2 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-[#F6E8EA] text-[#1A0A0F] flex items-center justify-center font-bold text-xs shadow-[0_0_10px_rgba(246,232,234,0.3)]">
-            GE
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-full bg-[#F6E8EA] text-[#1A0A0F] flex items-center justify-center font-bold text-xs shadow-[0_0_10px_rgba(246,232,234,0.3)] shrink-0">
+            {initials}
           </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-semibold text-[#FCF8F9]">Girum E.</span>
-            <span className="text-[10px] text-[#A38F99]">Workspace</span>
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-semibold text-[#FCF8F9] truncate">{user?.name || 'User'}</span>
+            <span className="text-[10px] text-[#A38F99] truncate">{user?.email || 'Workspace'}</span>
           </div>
         </div>
+        <button
+          onClick={handleLogout}
+          className="p-1.5 text-[#A38F99] hover:text-rose-400 hover:bg-[#2A1117] rounded-lg transition shrink-0"
+          title="Sign Out"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+        </button>
       </div>
     </aside>
   );
