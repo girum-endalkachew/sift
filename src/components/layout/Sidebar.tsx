@@ -32,7 +32,6 @@ export function Sidebar() {
       });
   }, []);
 
-  // Close drawer on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
@@ -48,7 +47,7 @@ export function Sidebar() {
     : 'S';
 
   const navItems = [
-    { label: 'Workspace', href: '/', icon: Sparkles },
+    { label: 'Workspace', href: '/workspace', icon: Sparkles },
     { label: 'Inbox', href: '/inbox', icon: Inbox },
     { label: 'Tasks', href: '/tasks', icon: CheckCircle2 },
     { label: 'Schedule', href: '/schedule', icon: Calendar },
@@ -57,32 +56,27 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile Top Header (< md) */}
       <header className="md:hidden sticky top-0 z-40 w-full bg-[#1A0A0F]/80 backdrop-blur-2xl border-b border-[#D8B4BE]/15 px-4 py-3 flex items-center justify-between select-none">
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href="/workspace" className="flex items-center space-x-2">
           <span className="w-3 h-3 rounded-full bg-[#F6E8EA] shadow-[0_0_10px_#F6E8EA]"></span>
           <span className="text-lg font-bold tracking-wider text-[#FCF8F9]">SIFT</span>
         </Link>
-
         <div className="flex items-center gap-2">
           <button
             onClick={openSearch}
             className="p-2 text-[#D8B4BE] bg-[#2A1117]/60 border border-[#D8B4BE]/20 rounded-xl"
-            aria-label="Search"
           >
             <Search className="w-4 h-4" />
           </button>
           <button
             onClick={() => setMobileOpen((prev) => !prev)}
             className="p-2 text-[#FCF8F9] bg-[#2A1117]/60 border border-[#D8B4BE]/20 rounded-xl"
-            aria-label="Toggle menu"
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </header>
 
-      {/* Mobile Backdrop Overlay */}
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 z-40 bg-[#1A0A0F]/80 backdrop-blur-sm"
@@ -90,7 +84,6 @@ export function Sidebar() {
         />
       )}
 
-      {/* Sidebar Content (Desktop static, Mobile slide-over drawer) */}
       <aside
         className={cn(
           'w-64 border-r border-[#D8B4BE]/15 bg-[#1A0A0F]/90 md:bg-[#1A0A0F]/60 backdrop-blur-2xl min-h-screen flex flex-col justify-between p-5 select-none transition-transform duration-200 z-50',
@@ -100,7 +93,7 @@ export function Sidebar() {
       >
         <div className="space-y-6">
           <div className="hidden md:flex items-center justify-between px-2">
-            <Link href="/" className="flex items-center space-x-2.5">
+            <Link href="/workspace" className="flex items-center space-x-2.5">
               <span className="w-3.5 h-3.5 rounded-full bg-[#F6E8EA] shadow-[0_0_12px_#F6E8EA]"></span>
               <span className="text-xl font-bold tracking-wider text-[#FCF8F9]">SIFT</span>
             </Link>

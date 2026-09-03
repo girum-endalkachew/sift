@@ -5,7 +5,18 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'sift-local-secret-key-change-in-production-12345'
 );
 
-const PUBLIC_PATHS = ['/login', '/signup', '/api/auth/login', '/api/auth/signup'];
+// Paths that never require authentication
+const PUBLIC_PATHS = [
+  '/',              // Landing page
+  '/login',
+  '/signup',
+  '/api/auth/login',
+  '/api/auth/signup',
+  '/api/sift',      // Allow public demo of Sift engine
+];
+
+// Paths that require authentication
+const PROTECTED_PATHS = ['/workspace', '/inbox', '/tasks', '/schedule', '/projects'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -21,18 +32,14 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect authenticated user away from login/signup to home
+  // Redirect authenticated users away from login/signup
   if (isAuthenticated && (pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/workspace', request.url));
   }
 
-  // Allow public paths
-  if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
-    return NextResponse.next();
-  }
-
-  // Redirect unauthenticated user to login
-  if (!isAuthenticated && !pathname.startsWith('/api/')) {
+  // Redirect unauthenticated users away from protected pages
+  const isProtected = PROTECTED_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'));
+  if (!isAuthenticated && isProtected) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
