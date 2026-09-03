@@ -6,6 +6,7 @@ export const createItemSchema = z.object({
   type: z.enum(['TASK', 'NOTE', 'EVENT', 'REMINDER', 'IDEA', 'REFERENCE']).default('TASK'),
   status: z.enum(['INBOX', 'TODO', 'IN_PROGRESS', 'DONE', 'ARCHIVED']).default('INBOX'),
   priority: z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT']).default('MEDIUM'),
+  isFocused: z.boolean().optional().default(false),
   dueDate: z.string().optional().nullable(),
   projectId: z.string().optional().nullable(),
 });

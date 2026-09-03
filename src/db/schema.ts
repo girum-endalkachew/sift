@@ -1,4 +1,4 @@
-import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
 // 1. Users Table
@@ -22,9 +22,6 @@ export const projects = sqliteTable('projects', {
 });
 
 // 3. Items Table (Heart of Sift)
-// Types: TASK, NOTE, EVENT, REMINDER, IDEA, REFERENCE
-// Status: INBOX, TODO, IN_PROGRESS, DONE, ARCHIVED
-// Priority: LOW, MEDIUM, HIGH, URGENT
 export const items = sqliteTable('items', {
   id: text('id').primaryKey(),
   userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
@@ -34,6 +31,7 @@ export const items = sqliteTable('items', {
   type: text('type', { enum: ['TASK', 'NOTE', 'EVENT', 'REMINDER', 'IDEA', 'REFERENCE'] }).default('TASK').notNull(),
   status: text('status', { enum: ['INBOX', 'TODO', 'IN_PROGRESS', 'DONE', 'ARCHIVED'] }).default('INBOX').notNull(),
   priority: text('priority', { enum: ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] }).default('MEDIUM').notNull(),
+  isFocused: integer('is_focused', { mode: 'boolean' }).default(false).notNull(),
   dueDate: text('due_date'),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull(),

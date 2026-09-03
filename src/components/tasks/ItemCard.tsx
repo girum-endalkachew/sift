@@ -15,7 +15,8 @@ import {
   FileText,
   Pencil,
   Check,
-  X
+  X,
+  Pin
 } from 'lucide-react';
 
 interface ItemCardProps {
@@ -47,6 +48,21 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
 
   const isDone = item.status === 'DONE';
   const Icon = typeIcons[item.type as ItemType] || CheckCircle;
+
+  const handleToggleFocus = async () => {
+    const nextFocused = !item.isFocused;
+    if (onUpdate) onUpdate(item.id, { isFocused: nextFocused });
+
+    try {
+      await fetch(`/api/items/${item.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isFocused: nextFocused }),
+      });
+    } catch (err) {
+      console.error('Failed to toggle focus:', err);
+    }
+  };
 
   const handleSave = async () => {
     if (!title.trim() || saving) return;
@@ -86,7 +102,6 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
     setIsEditing(false);
   };
 
-  // Editing Mode View
   if (isEditing) {
     return (
       <div className="p-4 rounded-xl glass-card border border-border space-y-3 animate-in fade-in duration-150">
@@ -100,7 +115,6 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
         />
 
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          {/* Type selector */}
           <div className="flex items-center gap-1 bg-surface/60 border border-border rounded-lg p-1">
             <span className="text-[10px] text-muted font-mono px-1">TYPE:</span>
             <select
@@ -116,7 +130,6 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
             </select>
           </div>
 
-          {/* Priority selector */}
           <div className="flex items-center gap-1 bg-surface/60 border border-border rounded-lg p-1">
             <span className="text-[10px] text-muted font-mono px-1">PRIORITY:</span>
             <select
@@ -132,7 +145,6 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
             </select>
           </div>
 
-          {/* Date selector */}
           <input
             type="datetime-local"
             value={dueDate}
@@ -162,11 +174,11 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
     );
   }
 
-  // Standard Display Mode View
   return (
     <div
       className={cn(
-        'group flex items-start justify-between p-4 rounded-xl glass-card',
+        'group flex items-start justify-between p-4 rounded-xl glass-card transition-all',
+        item.isFocused ? 'border-accent/60 bg-surface/80 shadow-[0_0_15px_color-mix(in_srgb,var(--accent)_15%,transparent)]' : '',
         isDone ? 'opacity-40' : 'opacity-100'
       )}
     >
@@ -198,6 +210,12 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
               {item.type}
             </span>
 
+            {item.isFocused && (
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-300">
+                FOCUS
+              </span>
+            )}
+
             {(item.priority === 'HIGH' || item.priority === 'URGENT') && (
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-rose-950/60 border border-rose-500/40 text-rose-300">
                 {item.priority}
@@ -214,8 +232,19 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
         </div>
       </div>
 
-      {/* Action buttons (Edit & Delete on hover) */}
       <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 flex items-center gap-1 shrink-0">
+        <button
+          onClick={handleToggleFocus}
+          className={cn(
+            'p-1.5 rounded-lg transition',
+            item.isFocused
+              ? 'text-amber-400 bg-surface'
+              : 'text-muted hover:text-amber-300 hover:bg-surface'
+          )}
+          title={item.isFocused ? 'Unpin from Focus' : 'Pin to Focus'}
+        >
+          <Pin className={cn('w-3.5 h-3.5', item.isFocused ? 'fill-amber-400' : '')} />
+        </button>
         <button
           onClick={() => setIsEditing(true)}
           className="p-1.5 text-muted hover:text-primary hover:bg-surface rounded-lg transition"

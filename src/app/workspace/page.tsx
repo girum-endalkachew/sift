@@ -6,7 +6,7 @@ import { HeroInput } from '@/components/inbox/HeroInput';
 import { ItemCard } from '@/components/tasks/ItemCard';
 import { ItemCardSkeleton } from '@/components/ui/Skeleton';
 import { Item } from '@/types';
-import { CheckCheck, Inbox, Calendar, Layers, Trash2 } from 'lucide-react';
+import { CheckCheck, Inbox, Calendar, Layers, Trash2, Target } from 'lucide-react';
 
 export default function WorkspacePage() {
   const [items, setItems] = useState<Item[]>([]);
@@ -67,12 +67,17 @@ export default function WorkspacePage() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowStr = tomorrow.toDateString();
 
+    const focusedItems: Item[] = [];
     const todayItems: Item[] = [];
     const tomorrowItems: Item[] = [];
     const upcomingItems: Item[] = [];
     const inboxItems: Item[] = [];
 
     items.forEach((item) => {
+      if (item.isFocused && item.status !== 'DONE') {
+        focusedItems.push(item);
+      }
+
       if (!item.dueDate) {
         inboxItems.push(item);
         return;
@@ -84,7 +89,7 @@ export default function WorkspacePage() {
       else upcomingItems.push(item);
     });
 
-    return { todayItems, tomorrowItems, upcomingItems, inboxItems };
+    return { focusedItems, todayItems, tomorrowItems, upcomingItems, inboxItems };
   }, [items]);
 
   const hasDoneItems = items.some((i) => i.status === 'DONE');
@@ -127,6 +132,29 @@ export default function WorkspacePage() {
 
         {!loading && (
           <div className="space-y-8 pb-16">
+            {/* FOCUS SECTION */}
+            {groups.focusedItems.length > 0 && (
+              <section className="space-y-3 p-4 rounded-2xl glass-panel border-amber-500/30">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
+                  <Target className="w-4 h-4 text-amber-400" />
+                  <span>Current Focus</span>
+                  <span className="text-muted font-normal">({groups.focusedItems.length})</span>
+                </div>
+                <div className="space-y-2">
+                  {groups.focusedItems.map((item) => (
+                    <ItemCard
+                      key={item.id}
+                      item={item}
+                      onToggleStatus={handleToggleStatus}
+                      onDelete={handleDelete}
+                      onUpdate={handleUpdate}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* TODAY SECTION */}
             {groups.todayItems.length > 0 && (
               <section className="space-y-3">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
@@ -147,6 +175,8 @@ export default function WorkspacePage() {
                 </div>
               </section>
             )}
+
+            {/* TOMORROW SECTION */}
             {groups.tomorrowItems.length > 0 && (
               <section className="space-y-3">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
@@ -167,6 +197,8 @@ export default function WorkspacePage() {
                 </div>
               </section>
             )}
+
+            {/* UPCOMING SECTION */}
             {groups.upcomingItems.length > 0 && (
               <section className="space-y-3">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
@@ -187,6 +219,8 @@ export default function WorkspacePage() {
                 </div>
               </section>
             )}
+
+            {/* INBOX SECTION */}
             {groups.inboxItems.length > 0 && (
               <section className="space-y-3">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
@@ -207,6 +241,7 @@ export default function WorkspacePage() {
                 </div>
               </section>
             )}
+
             {items.length === 0 && (
               <div className="text-center py-12 sm:py-16 glass-panel rounded-2xl p-6 sm:p-8">
                 <CheckCheck className="w-8 h-8 text-primary/60 mx-auto mb-2.5" />
