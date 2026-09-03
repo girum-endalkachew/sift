@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { siftRawInput } from '@/lib/organization/organizer';
+import { enrichWithAI } from '@/lib/ai/provider';
 import { getSessionUser } from '@/lib/auth';
 import { db, items } from '@/db';
 import crypto from 'crypto';
@@ -14,18 +15,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Text field is required' }, { status: 400 });
     }
 
-    const sifted = siftRawInput(text);
+    // 1. Try AI Enrichment (Optional Layer)
+    let siftedResults = await enrichWithAI(text).catch(() => null);
 
-    if (autoSave && sifted.length > 0) {
-      const recordsToInsert = sifted.map((item) => ({
+    // 2. Fallback to Deterministic Engine
+    if (!siftedResults || siftedResults.length === 0) {
+      const deterministic = siftRawInput(text);
+      siftedResults = deterministic.map((d) => ({
+        title: d.title,
+        type: d.type,
+        priority: d.priority,
+        dueDate: d.dueDate,
+      }));
+    }
+
+    // 3. Save to Database if autoSave requested
+    if (autoSave && siftedResults.length > 0) {
+      const recordsToInsert = siftedResults.map((item) => ({
         id: crypto.randomUUID(),
         userId: session?.userId || null,
         title: item.title,
-        content: `Extracted from: "${item.raw}"`,
+        content: `Extracted from: "${text}"`,
         type: item.type,
-        status: item.status,
+        status: (item.type === 'TASK' || item.type === 'EVENT' ? 'TODO' : 'INBOX') as any,
         priority: item.priority,
-        dueDate: item.dueDate,
+        dueDate: item.dueDate || null,
       }));
 
       await db.insert(items).values(recordsToInsert);
@@ -37,7 +51,7 @@ export async function POST(request: NextRequest) {
       }, { status: 201 });
     }
 
-    return NextResponse.json({ success: true, count: sifted.length, data: sifted });
+    return NextResponse.json({ success: true, count: siftedResults.length, data: siftedResults });
   } catch (error) {
     console.error('Error in Sift engine:', error);
     return NextResponse.json({ success: false, error: 'Failed to process text' }, { status: 500 });
