@@ -18,9 +18,12 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   History,
+  MessageSquarePlus,
+  ShieldCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSearch } from './SearchProvider';
+import { FeedbackModal } from '@/components/ui/FeedbackModal';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -30,6 +33,7 @@ export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -80,16 +84,22 @@ export function Sidebar() {
     { label: 'Schedule', href: '/schedule', icon: Calendar },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
     { label: 'History', href: '/history', icon: History },
+    { label: 'Admin', href: '/admin', icon: ShieldCheck },
   ];
 
   return (
     <>
+      <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+
       <header className="md:hidden sticky top-0 z-40 w-full glass-panel border-b border-border px-4 py-3 flex items-center justify-between select-none rounded-none">
         <Link href="/workspace" className="flex items-center space-x-2">
           <span className="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />
           <span className="text-lg font-bold tracking-wider text-foreground">SIFT</span>
         </Link>
         <div className="flex items-center gap-2">
+          <button onClick={() => setFeedbackOpen(true)} className="p-2 text-accent bg-surface border border-border rounded-xl">
+            <MessageSquarePlus className="w-4 h-4" />
+          </button>
           <button onClick={toggleTheme} className="p-2 text-muted hover:text-foreground bg-surface border border-border rounded-xl">
             {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-amber-300" />}
           </button>
@@ -147,17 +157,6 @@ export function Sidebar() {
             </div>
           )}
 
-          {collapsed && (
-            <div className="hidden md:flex flex-col items-center gap-2">
-              <button onClick={openSearch} className="p-2.5 text-muted hover:text-foreground glass-card rounded-xl" title="Search">
-                <Search className="w-4 h-4" />
-              </button>
-              <button onClick={toggleTheme} className="p-2.5 text-muted hover:text-foreground glass-card rounded-xl" title="Theme">
-                {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-amber-300" />}
-              </button>
-            </div>
-          )}
-
           <nav className="space-y-1.5">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -185,23 +184,35 @@ export function Sidebar() {
           </nav>
         </div>
 
-        <div className={cn('pt-4 border-t border-border px-1 flex items-center', collapsed ? 'justify-center' : 'justify-between')}>
-          <div className={cn('flex items-center min-w-0', collapsed ? '' : 'gap-2.5')}>
-            <div className="w-8 h-8 rounded-full bg-primary text-inverse flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
-              {initials}
-            </div>
-            {!collapsed && (
-              <div className="flex flex-col min-w-0">
-                <span className="text-xs font-semibold text-foreground truncate">{user?.name || 'User'}</span>
-                <span className="text-[10px] text-muted truncate">{user?.email || 'Workspace'}</span>
-              </div>
-            )}
-          </div>
+        <div className="space-y-2 pt-4 border-t border-border px-1">
           {!collapsed && (
-            <button onClick={handleLogout} className="p-1.5 text-muted hover:text-rose-500 hover:bg-surface rounded-lg transition shrink-0" title="Sign Out">
-              <LogOut className="w-3.5 h-3.5" />
+            <button
+              onClick={() => setFeedbackOpen(true)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-xs text-accent hover:text-foreground glass-card rounded-xl transition"
+            >
+              <MessageSquarePlus className="w-3.5 h-3.5" />
+              <span>Send Feedback</span>
             </button>
           )}
+
+          <div className={cn('flex items-center', collapsed ? 'justify-center' : 'justify-between')}>
+            <div className={cn('flex items-center min-w-0', collapsed ? '' : 'gap-2.5')}>
+              <div className="w-8 h-8 rounded-full bg-primary text-inverse flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+                {initials}
+              </div>
+              {!collapsed && (
+                <div className="flex flex-col min-w-0">
+                  <span className="text-xs font-semibold text-foreground truncate">{user?.name || 'User'}</span>
+                  <span className="text-[10px] text-muted truncate">{user?.email || 'Workspace'}</span>
+                </div>
+              )}
+            </div>
+            {!collapsed && (
+              <button onClick={handleLogout} className="p-1.5 text-muted hover:text-rose-500 hover:bg-surface rounded-lg transition shrink-0" title="Sign Out">
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </div>
       </aside>
     </>

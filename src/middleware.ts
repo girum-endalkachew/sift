@@ -12,9 +12,18 @@ const PUBLIC_PATHS = [
   '/api/auth/login',
   '/api/auth/signup',
   '/api/sift',
+  '/api/feedback',
 ];
 
-const PROTECTED_PATHS = ['/workspace', '/inbox', '/tasks', '/schedule', '/projects', '/history'];
+const PROTECTED_PATHS = [
+  '/workspace', 
+  '/inbox', 
+  '/tasks', 
+  '/schedule', 
+  '/projects', 
+  '/history',
+  '/admin',
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
