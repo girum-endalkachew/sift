@@ -1,67 +1,211 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useEffect, useState, useMemo } from 'react';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { HeroInput } from '@/components/inbox/HeroInput';
+import { ItemCard } from '@/components/tasks/ItemCard';
+import { Item } from '@/types';
+import { CheckCheck, Inbox, Calendar, Layers } from 'lucide-react';
+
+export default function WorkspacePage() {
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchItems = async () => {
+    try {
+      const res = await fetch('/api/items');
+      const data = await res.json();
+      if (data.success) {
+        setItems(data.data);
+      }
+    } catch (err) {
+      console.error('Failed to load items', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const nextStatus = currentStatus === 'DONE' ? 'TODO' : 'DONE';
+    
+    // Optimistic UI update
+    setItems((prev) =>
+      prev.map((i) => (i.id === id ? { ...i, status: nextStatus as any } : i))
+    );
+
+    await fetch(`/api/items/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: nextStatus }),
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    // Optimistic UI update
+    setItems((prev) => prev.filter((i) => i.id !== id));
+
+    await fetch(`/api/items/${id}`, {
+      method: 'DELETE',
+    });
+  };
+
+  // Group items by timeframe / category
+  const groups = useMemo(() => {
+    const now = new Date();
+    const todayStr = now.toDateString();
+
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toDateString();
+
+    const todayItems: Item[] = [];
+    const tomorrowItems: Item[] = [];
+    const upcomingItems: Item[] = [];
+    const inboxItems: Item[] = [];
+
+    items.forEach((item) => {
+      if (!item.dueDate) {
+        inboxItems.push(item);
+        return;
+      }
+
+      const itemDate = new Date(item.dueDate);
+      const itemDateStr = itemDate.toDateString();
+
+      if (itemDateStr === todayStr) {
+        todayItems.push(item);
+      } else if (itemDateStr === tomorrowStr) {
+        tomorrowItems.push(item);
+      } else {
+        upcomingItems.push(item);
+      }
+    });
+
+    return { todayItems, tomorrowItems, upcomingItems, inboxItems };
+  }, [items]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <div className="flex min-h-screen bg-canvas">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-4xl mx-auto px-8 py-10 space-y-9">
+        {/* Calm Header */}
+        <header className="space-y-1">
+          <h1 className="text-2xl font-bold tracking-tight text-text-dark">
+            Good afternoon, Girum.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-sm text-muted">
+            Let's clear your head. Dump your thoughts below and Sift will organize them.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        </header>
+
+        {/* Hero Input Box */}
+        <section>
+          <HeroInput onItemAdded={fetchItems} />
+        </section>
+
+        {/* Organized Items Stream */}
+        <div className="space-y-8 pb-16">
+          {/* Section: Today */}
+          {groups.todayItems.length > 0 && (
+            <section className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-burgundy">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Today</span>
+                <span className="text-muted font-normal">({groups.todayItems.length})</span>
+              </div>
+              <div className="space-y-2">
+                {groups.todayItems.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    onToggleStatus={handleToggleStatus}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Section: Tomorrow */}
+          {groups.tomorrowItems.length > 0 && (
+            <section className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-burgundy">
+                <Calendar className="w-3.5 h-3.5 text-muted" />
+                <span>Tomorrow</span>
+                <span className="text-muted font-normal">({groups.tomorrowItems.length})</span>
+              </div>
+              <div className="space-y-2">
+                {groups.tomorrowItems.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    onToggleStatus={handleToggleStatus}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Section: Upcoming */}
+          {groups.upcomingItems.length > 0 && (
+            <section className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-burgundy">
+                <Layers className="w-3.5 h-3.5 text-muted" />
+                <span>Upcoming</span>
+                <span className="text-muted font-normal">({groups.upcomingItems.length})</span>
+              </div>
+              <div className="space-y-2">
+                {groups.upcomingItems.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    onToggleStatus={handleToggleStatus}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Section: General Inbox / Ideas */}
+          {groups.inboxItems.length > 0 && (
+            <section className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-burgundy">
+                <Inbox className="w-3.5 h-3.5 text-muted" />
+                <span>Inbox & Ideas</span>
+                <span className="text-muted font-normal">({groups.inboxItems.length})</span>
+              </div>
+              <div className="space-y-2">
+                {groups.inboxItems.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    onToggleStatus={handleToggleStatus}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Empty State */}
+          {!loading && items.length === 0 && (
+            <div className="text-center py-16 border border-dashed border-rose-soft/60 rounded-2xl p-8 bg-blush/20">
+              <CheckCheck className="w-8 h-8 text-burgundy/50 mx-auto mb-2.5" />
+              <p className="text-sm font-medium text-text-dark">Your mind is clear</p>
+              <p className="text-xs text-muted mt-1 max-w-sm mx-auto">
+                Type any task, meeting, or random idea into the box above to sift it into your workspace.
+              </p>
+            </div>
+          )}
         </div>
       </main>
     </div>
