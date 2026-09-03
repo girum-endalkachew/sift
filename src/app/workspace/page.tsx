@@ -5,6 +5,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { HeroInput } from '@/components/inbox/HeroInput';
 import { ItemCard } from '@/components/tasks/ItemCard';
 import { ItemCardSkeleton } from '@/components/ui/Skeleton';
+import { CollapsibleSection } from '@/components/ui/CollapsibleSection';
 import { Item } from '@/types';
 import { CheckCheck, Inbox, Calendar, Layers, Trash2, Target } from 'lucide-react';
 
@@ -16,9 +17,7 @@ export default function WorkspacePage() {
     try {
       const res = await fetch('/api/items');
       const data = await res.json();
-      if (data.success) {
-        setItems(data.data);
-      }
+      if (data.success) setItems(data.data);
     } catch (err) {
       console.error('Failed to load items', err);
     } finally {
@@ -46,9 +45,7 @@ export default function WorkspacePage() {
   };
 
   const handleUpdate = (id: string, updatedData: Partial<Item>) => {
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, ...updatedData } : i))
-    );
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...updatedData } : i)));
   };
 
   const handleClearCompleted = async () => {
@@ -74,16 +71,13 @@ export default function WorkspacePage() {
     const inboxItems: Item[] = [];
 
     items.forEach((item) => {
-      if (item.isFocused && item.status !== 'DONE') {
-        focusedItems.push(item);
-      }
+      if (item.isFocused && item.status !== 'DONE') focusedItems.push(item);
 
       if (!item.dueDate) {
         inboxItems.push(item);
         return;
       }
-      const itemDate = new Date(item.dueDate);
-      const itemDateStr = itemDate.toDateString();
+      const itemDateStr = new Date(item.dueDate).toDateString();
       if (itemDateStr === todayStr) todayItems.push(item);
       else if (itemDateStr === tomorrowStr) tomorrowItems.push(item);
       else upcomingItems.push(item);
@@ -104,13 +98,13 @@ export default function WorkspacePage() {
               Good afternoon.
             </h1>
             <p className="text-xs sm:text-sm text-muted">
-              Let's clear your head. Dump raw thoughts below and Sift will organize them.
+              Dump raw thoughts. Correct. Focus. Keep moving.
             </p>
           </div>
           {hasDoneItems && (
             <button
               onClick={handleClearCompleted}
-              className="self-start sm:self-auto flex items-center gap-1.5 text-xs text-muted hover:text-foreground bg-surface/60 hover:bg-surface border border-border px-3 py-2 rounded-xl transition"
+              className="self-start sm:self-auto flex items-center gap-1.5 text-xs text-muted hover:text-foreground glass-card px-3 py-2 rounded-xl transition"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear Done</span>
@@ -131,115 +125,52 @@ export default function WorkspacePage() {
         )}
 
         {!loading && (
-          <div className="space-y-8 pb-16">
-            {/* FOCUS SECTION */}
+          <div className="space-y-6 pb-16">
             {groups.focusedItems.length > 0 && (
-              <section className="space-y-3 p-4 rounded-2xl glass-panel border-amber-500/30">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
-                  <Target className="w-4 h-4 text-amber-400" />
-                  <span>Current Focus</span>
-                  <span className="text-muted font-normal">({groups.focusedItems.length})</span>
-                </div>
-                <div className="space-y-2">
-                  {groups.focusedItems.map((item) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      onToggleStatus={handleToggleStatus}
-                      onDelete={handleDelete}
-                      onUpdate={handleUpdate}
-                    />
-                  ))}
-                </div>
-              </section>
+              <CollapsibleSection
+                title="Current Focus"
+                count={groups.focusedItems.length}
+                icon={Target}
+                accentClassName="text-amber-500"
+                framed
+                defaultOpen
+              >
+                {groups.focusedItems.map((item) => (
+                  <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} onUpdate={handleUpdate} />
+                ))}
+              </CollapsibleSection>
             )}
 
-            {/* TODAY SECTION */}
             {groups.todayItems.length > 0 && (
-              <section className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
-                  <Calendar className="w-3.5 h-3.5 text-accent" />
-                  <span>Today</span>
-                  <span className="text-muted font-normal">({groups.todayItems.length})</span>
-                </div>
-                <div className="space-y-2">
-                  {groups.todayItems.map((item) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      onToggleStatus={handleToggleStatus}
-                      onDelete={handleDelete}
-                      onUpdate={handleUpdate}
-                    />
-                  ))}
-                </div>
-              </section>
+              <CollapsibleSection title="Today" count={groups.todayItems.length} icon={Calendar} defaultOpen>
+                {groups.todayItems.map((item) => (
+                  <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} onUpdate={handleUpdate} />
+                ))}
+              </CollapsibleSection>
             )}
 
-            {/* TOMORROW SECTION */}
             {groups.tomorrowItems.length > 0 && (
-              <section className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
-                  <Calendar className="w-3.5 h-3.5 text-accent" />
-                  <span>Tomorrow</span>
-                  <span className="text-muted font-normal">({groups.tomorrowItems.length})</span>
-                </div>
-                <div className="space-y-2">
-                  {groups.tomorrowItems.map((item) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      onToggleStatus={handleToggleStatus}
-                      onDelete={handleDelete}
-                      onUpdate={handleUpdate}
-                    />
-                  ))}
-                </div>
-              </section>
+              <CollapsibleSection title="Tomorrow" count={groups.tomorrowItems.length} icon={Calendar} defaultOpen>
+                {groups.tomorrowItems.map((item) => (
+                  <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} onUpdate={handleUpdate} />
+                ))}
+              </CollapsibleSection>
             )}
 
-            {/* UPCOMING SECTION */}
             {groups.upcomingItems.length > 0 && (
-              <section className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
-                  <Layers className="w-3.5 h-3.5 text-accent" />
-                  <span>Upcoming</span>
-                  <span className="text-muted font-normal">({groups.upcomingItems.length})</span>
-                </div>
-                <div className="space-y-2">
-                  {groups.upcomingItems.map((item) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      onToggleStatus={handleToggleStatus}
-                      onDelete={handleDelete}
-                      onUpdate={handleUpdate}
-                    />
-                  ))}
-                </div>
-              </section>
+              <CollapsibleSection title="Upcoming" count={groups.upcomingItems.length} icon={Layers} defaultOpen={false}>
+                {groups.upcomingItems.map((item) => (
+                  <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} onUpdate={handleUpdate} />
+                ))}
+              </CollapsibleSection>
             )}
 
-            {/* INBOX SECTION */}
             {groups.inboxItems.length > 0 && (
-              <section className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
-                  <Inbox className="w-3.5 h-3.5 text-accent" />
-                  <span>Inbox & Ideas</span>
-                  <span className="text-muted font-normal">({groups.inboxItems.length})</span>
-                </div>
-                <div className="space-y-2">
-                  {groups.inboxItems.map((item) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      onToggleStatus={handleToggleStatus}
-                      onDelete={handleDelete}
-                      onUpdate={handleUpdate}
-                    />
-                  ))}
-                </div>
-              </section>
+              <CollapsibleSection title="Inbox & Ideas" count={groups.inboxItems.length} icon={Inbox} defaultOpen={false}>
+                {groups.inboxItems.map((item) => (
+                  <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} onUpdate={handleUpdate} />
+                ))}
+              </CollapsibleSection>
             )}
 
             {items.length === 0 && (
@@ -247,7 +178,7 @@ export default function WorkspacePage() {
                 <CheckCheck className="w-8 h-8 text-primary/60 mx-auto mb-2.5" />
                 <p className="text-sm font-semibold text-foreground">Your mind is clear</p>
                 <p className="text-xs text-muted mt-1 max-w-sm mx-auto leading-relaxed">
-                  Type any task, meeting, or random idea into the input above to sift it into your workspace.
+                  Type any task, meeting, or random idea into the input above.
                 </p>
               </div>
             )}

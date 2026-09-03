@@ -12,25 +12,23 @@
 }
 
 :root {
-  /* LIGHT MODE - Crisp Luminous Blush & Warm White Canvas */
   --bg: #FBF4F6;
   --fg: #24171A;
   --muted: #806D73;
   --accent: #A3485E;
-  --border-color: rgba(216, 180, 190, 0.45);
-  --surface: rgba(255, 255, 255, 0.85);
+  --border-color: rgba(255, 255, 255, 0.65);
+  --surface: rgba(255, 255, 255, 0.45);
   --primary: #1A0A0F;
   --inverse: #FCF8F9;
 }
 
 [data-theme="dark"] {
-  /* DARK MODE - Deep Burgundy */
   --bg: #1A0A0F;
   --fg: #FCF8F9;
   --muted: #A38F99;
   --accent: #D8B4BE;
-  --border-color: rgba(216, 180, 190, 0.2);
-  --surface: rgba(42, 17, 23, 0.55);
+  --border-color: rgba(216, 180, 190, 0.22);
+  --surface: rgba(42, 17, 23, 0.42);
   --primary: #F6E8EA;
   --inverse: #1A0A0F;
 }
@@ -42,52 +40,86 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Ambient Radial Background */
 .ambient-bg {
   background-color: var(--bg);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(246, 232, 234, 0.8) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(216, 180, 190, 0.3) 0px, transparent 60%);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(246, 232, 234, 0.9) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(216, 180, 190, 0.35) 0px, transparent 55%);
 }
 
 [data-theme="dark"] .ambient-bg {
-  background-image: 
-    radial-gradient(at 10% 15%, rgba(216, 180, 190, 0.12) 0px, transparent 45%),
-    radial-gradient(at 90% 80%, rgba(120, 20, 40, 0.3) 0px, transparent 50%);
+  background-image:
+    radial-gradient(at 10% 15%, rgba(216, 180, 190, 0.14) 0px, transparent 45%),
+    radial-gradient(at 90% 80%, rgba(120, 20, 40, 0.32) 0px, transparent 50%);
 }
 
-/* Glassmorphism Surfaces */
+/* Strong glass surfaces */
 .glass-panel {
-  background: var(--surface);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface) 90%, transparent),
+    color-mix(in srgb, var(--surface) 55%, transparent)
+  );
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   border: 1px solid var(--border-color);
-  box-shadow: 0 12px 32px 0 rgba(36, 23, 26, 0.05);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .glass-card {
-  background: var(--surface);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--surface) 95%, transparent),
+    color-mix(in srgb, var(--surface) 50%, transparent)
+  );
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 16px 0 rgba(36, 23, 26, 0.03);
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 6px 20px 0 rgba(36, 23, 26, 0.07);
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border-color));
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .glass-input {
-  background: var(--surface);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--surface) 92%, transparent),
+    color-mix(in srgb, var(--surface) 48%, transparent)
+  );
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   border: 1px solid var(--border-color);
-  box-shadow: 0 8px 24px 0 rgba(36, 23, 26, 0.04);
+  box-shadow:
+    0 10px 36px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .glass-input:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px 0 rgba(216, 180, 190, 0.3);
+  border-color: color-mix(in srgb, var(--accent) 70%, white);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.glass-sidebar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface) 88%, transparent),
+    color-mix(in srgb, var(--surface) 45%, transparent)
+  );
+  backdrop-filter: blur(30px) saturate(170%);
+  -webkit-backdrop-filter: blur(30px) saturate(170%);
+  border-right: 1px solid var(--border-color);
+  box-shadow:
+    8px 0 40px rgba(0, 0, 0, 0.06),
+    inset -1px 0 0 rgba(255, 255, 255, 0.2);
 }
