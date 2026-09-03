@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { ItemCard } from '@/components/tasks/ItemCard';
+import { CollapsibleSection } from '@/components/ui/CollapsibleSection';
 import { Item } from '@/types';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 
@@ -15,7 +16,6 @@ export default function SchedulePage() {
       const res = await fetch('/api/items');
       const data = await res.json();
       if (data.success) {
-        // Filter only items with a due date or classified as EVENT / REMINDER
         const scheduled = data.data.filter((i: Item) => i.dueDate || i.type === 'EVENT' || i.type === 'REMINDER');
         setItems(scheduled);
       }
@@ -26,9 +26,7 @@ export default function SchedulePage() {
     }
   };
 
-  useEffect(() => {
-    fetchSchedule();
-  }, []);
+  useEffect(() => { fetchSchedule(); }, []);
 
   const handleToggleStatus = async (id: string, currentStatus: string) => {
     const nextStatus = currentStatus === 'DONE' ? 'TODO' : 'DONE';
@@ -45,39 +43,34 @@ export default function SchedulePage() {
     await fetch(`/api/items/${id}`, { method: 'DELETE' });
   };
 
+  const handleUpdate = (id: string, updatedData: Partial<Item>) => {
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...updatedData } : i)));
+  };
+
   return (
-    <div className="flex min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen">
       <Sidebar />
-      <main className="flex-1 max-w-4xl mx-auto px-8 py-10 space-y-8">
-        <header className="space-y-1.5">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 md:px-8 py-6 md:py-10 space-y-6">
+        <header className="space-y-1">
           <div className="flex items-center gap-2 text-accent text-xs font-mono uppercase tracking-widest">
             <CalendarIcon className="w-4 h-4 text-primary" />
             <span>Timeline</span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Schedule</h1>
-          <p className="text-sm text-muted">
-            Time-sensitive events, meetings, exams, and reminders.
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">Schedule</h1>
+          <p className="text-xs sm:text-sm text-muted">Events, meetings, exams, and reminders.</p>
         </header>
 
-        <div className="space-y-3">
+        <CollapsibleSection title="Scheduled" count={items.length} icon={CalendarIcon} defaultOpen>
           {items.map((item) => (
-            <ItemCard
-              key={item.id}
-              item={item}
-              onToggleStatus={handleToggleStatus}
-              onDelete={handleDelete}
-            />
+            <ItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDelete={handleDelete} onUpdate={handleUpdate} />
           ))}
-
           {!loading && items.length === 0 && (
-            <div className="text-center py-16 glass-panel rounded-2xl p-8">
-              <Clock className="w-8 h-8 text-primary/60 mx-auto mb-2.5" />
+            <div className="text-center py-12 glass-panel rounded-2xl p-6">
+              <Clock className="w-7 h-7 text-primary/60 mx-auto mb-2" />
               <p className="text-sm font-semibold text-foreground">No scheduled items</p>
-              <p className="text-xs text-muted mt-1">Dump dates or meeting times into Sift to auto-schedule them.</p>
             </div>
           )}
-        </div>
+        </CollapsibleSection>
       </main>
     </div>
   );

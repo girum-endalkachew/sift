@@ -17,6 +17,7 @@ import {
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
+  History,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSearch } from './SearchProvider';
@@ -78,11 +79,11 @@ export function Sidebar() {
     { label: 'Tasks', href: '/tasks', icon: CheckCircle2 },
     { label: 'Schedule', href: '/schedule', icon: Calendar },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
+    { label: 'History', href: '/history', icon: History },
   ];
 
   return (
     <>
-      {/* Mobile top bar */}
       <header className="md:hidden sticky top-0 z-40 w-full glass-panel border-b border-border px-4 py-3 flex items-center justify-between select-none rounded-none">
         <Link href="/workspace" className="flex items-center space-x-2">
           <span className="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />
@@ -105,7 +106,6 @@ export function Sidebar() {
         <div className="md:hidden fixed inset-0 z-40 bg-background/70 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
       )}
 
-      {/* Sidebar */}
       <aside
         className={cn(
           'glass-sidebar min-h-screen flex flex-col justify-between p-3 select-none transition-all duration-300 z-50',
@@ -124,19 +124,11 @@ export function Sidebar() {
               </Link>
             )}
             <div className={cn('flex items-center gap-1', collapsed && 'flex-col gap-2')}>
-              <button
-                onClick={toggleCollapsed}
-                className="p-1.5 text-muted hover:text-foreground bg-surface/70 border border-border rounded-lg transition"
-                title={collapsed ? 'Open sidebar' : 'Close sidebar'}
-              >
+              <button onClick={toggleCollapsed} className="p-1.5 text-muted hover:text-foreground bg-surface/70 border border-border rounded-lg transition" title={collapsed ? 'Open sidebar' : 'Close sidebar'}>
                 {collapsed ? <PanelLeftOpen className="w-3.5 h-3.5" /> : <PanelLeftClose className="w-3.5 h-3.5" />}
               </button>
               {!collapsed && (
-                <button
-                  onClick={toggleTheme}
-                  className="p-1.5 text-muted hover:text-foreground bg-surface/70 border border-border rounded-lg transition"
-                  title="Toggle theme"
-                >
+                <button onClick={toggleTheme} className="p-1.5 text-muted hover:text-foreground bg-surface/70 border border-border rounded-lg transition" title="Toggle theme">
                   {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5 text-amber-300" />}
                 </button>
               )}
@@ -145,10 +137,7 @@ export function Sidebar() {
 
           {!collapsed && (
             <div className="hidden md:block px-1">
-              <button
-                onClick={openSearch}
-                className="w-full flex items-center justify-between px-3 py-2 text-xs text-muted glass-card rounded-xl hover:text-foreground transition"
-              >
+              <button onClick={openSearch} className="w-full flex items-center justify-between px-3 py-2 text-xs text-muted glass-card rounded-xl hover:text-foreground transition">
                 <span className="flex items-center gap-2">
                   <Search className="w-3.5 h-3.5 text-accent" />
                   <span>Search...</span>
@@ -209,11 +198,7 @@ export function Sidebar() {
             )}
           </div>
           {!collapsed && (
-            <button
-              onClick={handleLogout}
-              className="p-1.5 text-muted hover:text-rose-500 hover:bg-surface rounded-lg transition shrink-0"
-              title="Sign Out"
-            >
+            <button onClick={handleLogout} className="p-1.5 text-muted hover:text-rose-500 hover:bg-surface rounded-lg transition shrink-0" title="Sign Out">
               <LogOut className="w-3.5 h-3.5" />
             </button>
           )}

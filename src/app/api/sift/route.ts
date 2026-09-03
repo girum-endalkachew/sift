@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { siftRawInput } from '@/lib/organization/organizer';
 import { enrichWithAI } from '@/lib/ai/provider';
 import { getSessionUser } from '@/lib/auth';
-import { db, items } from '@/db';
+import { db, items, dumps } from '@/db';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
@@ -15,10 +15,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Text field is required' }, { status: 400 });
     }
 
-    // 1. Try AI Enrichment (Optional Layer)
     let siftedResults = await enrichWithAI(text).catch(() => null);
 
-    // 2. Fallback to Deterministic Engine
     if (!siftedResults || siftedResults.length === 0) {
       const deterministic = siftRawInput(text);
       siftedResults = deterministic.map((d) => ({
@@ -26,20 +24,31 @@ export async function POST(request: NextRequest) {
         type: d.type,
         priority: d.priority,
         dueDate: d.dueDate,
+        raw: d.raw,
       }));
     }
 
-    // 3. Save to Database if autoSave requested
     if (autoSave && siftedResults.length > 0) {
-      const recordsToInsert = siftedResults.map((item) => ({
+      const dumpId = crypto.randomUUID();
+
+      await db.insert(dumps).values({
+        id: dumpId,
+        userId: session?.userId || null,
+        rawText: text,
+        itemCount: siftedResults.length,
+      });
+
+      const recordsToInsert = siftedResults.map((item: any) => ({
         id: crypto.randomUUID(),
         userId: session?.userId || null,
+        dumpId,
         title: item.title,
-        content: `Extracted from: "${text}"`,
+        content: item.raw ? `Extracted from: "${item.raw}"` : `Extracted from dump`,
         type: item.type,
         status: (item.type === 'TASK' || item.type === 'EVENT' ? 'TODO' : 'INBOX') as any,
         priority: item.priority,
         dueDate: item.dueDate || null,
+        isFocused: false,
       }));
 
       await db.insert(items).values(recordsToInsert);
@@ -47,6 +56,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         count: recordsToInsert.length,
+        dumpId,
         data: recordsToInsert,
       }, { status: 201 });
     }
