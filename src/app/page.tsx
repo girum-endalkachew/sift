@@ -32,7 +32,6 @@ export default function WorkspacePage() {
   const handleToggleStatus = async (id: string, currentStatus: string) => {
     const nextStatus = currentStatus === 'DONE' ? 'TODO' : 'DONE';
     
-    // Optimistic UI update
     setItems((prev) =>
       prev.map((i) => (i.id === id ? { ...i, status: nextStatus as any } : i))
     );
@@ -45,7 +44,6 @@ export default function WorkspacePage() {
   };
 
   const handleDelete = async (id: string) => {
-    // Optimistic UI update
     setItems((prev) => prev.filter((i) => i.id !== id));
 
     await fetch(`/api/items/${id}`, {
@@ -53,7 +51,6 @@ export default function WorkspacePage() {
     });
   };
 
-  // Group items by timeframe / category
   const groups = useMemo(() => {
     const now = new Date();
     const todayStr = now.toDateString();
@@ -89,19 +86,17 @@ export default function WorkspacePage() {
   }, [items]);
 
   return (
-    <div className="flex min-h-screen bg-canvas">
-      {/* Sidebar */}
+    <div className="flex min-h-screen">
       <Sidebar />
 
-      {/* Main Content Area */}
       <main className="flex-1 max-w-4xl mx-auto px-8 py-10 space-y-9">
-        {/* Calm Header */}
-        <header className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-text-dark">
+        {/* Header */}
+        <header className="space-y-1.5">
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#FCF8F9]">
             Good afternoon, Girum.
           </h1>
-          <p className="text-sm text-muted">
-            Let's clear your head. Dump your thoughts below and Sift will organize them.
+          <p className="text-sm text-[#A38F99]">
+            Let's clear your head. Dump raw thoughts below and Sift will organize them.
           </p>
         </header>
 
@@ -112,13 +107,13 @@ export default function WorkspacePage() {
 
         {/* Organized Items Stream */}
         <div className="space-y-8 pb-16">
-          {/* Section: Today */}
+          {/* Today */}
           {groups.todayItems.length > 0 && (
             <section className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-burgundy">
-                <Calendar className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
+                <Calendar className="w-3.5 h-3.5 text-[#D8B4BE]" />
                 <span>Today</span>
-                <span className="text-muted font-normal">({groups.todayItems.length})</span>
+                <span className="text-[#A38F99] font-normal">({groups.todayItems.length})</span>
               </div>
               <div className="space-y-2">
                 {groups.todayItems.map((item) => (
@@ -133,13 +128,13 @@ export default function WorkspacePage() {
             </section>
           )}
 
-          {/* Section: Tomorrow */}
+          {/* Tomorrow */}
           {groups.tomorrowItems.length > 0 && (
             <section className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-burgundy">
-                <Calendar className="w-3.5 h-3.5 text-muted" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
+                <Calendar className="w-3.5 h-3.5 text-[#D8B4BE]" />
                 <span>Tomorrow</span>
-                <span className="text-muted font-normal">({groups.tomorrowItems.length})</span>
+                <span className="text-[#A38F99] font-normal">({groups.tomorrowItems.length})</span>
               </div>
               <div className="space-y-2">
                 {groups.tomorrowItems.map((item) => (
@@ -154,13 +149,13 @@ export default function WorkspacePage() {
             </section>
           )}
 
-          {/* Section: Upcoming */}
+          {/* Upcoming */}
           {groups.upcomingItems.length > 0 && (
             <section className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-burgundy">
-                <Layers className="w-3.5 h-3.5 text-muted" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
+                <Layers className="w-3.5 h-3.5 text-[#D8B4BE]" />
                 <span>Upcoming</span>
-                <span className="text-muted font-normal">({groups.upcomingItems.length})</span>
+                <span className="text-[#A38F99] font-normal">({groups.upcomingItems.length})</span>
               </div>
               <div className="space-y-2">
                 {groups.upcomingItems.map((item) => (
@@ -175,13 +170,13 @@ export default function WorkspacePage() {
             </section>
           )}
 
-          {/* Section: General Inbox / Ideas */}
+          {/* Inbox & Ideas */}
           {groups.inboxItems.length > 0 && (
             <section className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-burgundy">
-                <Inbox className="w-3.5 h-3.5 text-muted" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F6E8EA]">
+                <Inbox className="w-3.5 h-3.5 text-[#D8B4BE]" />
                 <span>Inbox & Ideas</span>
-                <span className="text-muted font-normal">({groups.inboxItems.length})</span>
+                <span className="text-[#A38F99] font-normal">({groups.inboxItems.length})</span>
               </div>
               <div className="space-y-2">
                 {groups.inboxItems.map((item) => (
@@ -198,11 +193,11 @@ export default function WorkspacePage() {
 
           {/* Empty State */}
           {!loading && items.length === 0 && (
-            <div className="text-center py-16 border border-dashed border-rose-soft/60 rounded-2xl p-8 bg-blush/20">
-              <CheckCheck className="w-8 h-8 text-burgundy/50 mx-auto mb-2.5" />
-              <p className="text-sm font-medium text-text-dark">Your mind is clear</p>
-              <p className="text-xs text-muted mt-1 max-w-sm mx-auto">
-                Type any task, meeting, or random idea into the box above to sift it into your workspace.
+            <div className="text-center py-16 glass-panel rounded-2xl p-8">
+              <CheckCheck className="w-8 h-8 text-[#F6E8EA]/60 mx-auto mb-2.5" />
+              <p className="text-sm font-semibold text-[#FCF8F9]">Your mind is clear</p>
+              <p className="text-xs text-[#A38F99] mt-1 max-w-sm mx-auto leading-relaxed">
+                Type any task, meeting, or random idea into the input above to sift it into your workspace.
               </p>
             </div>
           )}

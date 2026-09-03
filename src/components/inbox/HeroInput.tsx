@@ -45,13 +45,13 @@ export function HeroInput({ onItemAdded }: HeroInputProps) {
   };
 
   return (
-    <div className="w-full bg-blush/80 border border-rose-soft/60 rounded-2xl p-5 shadow-sm transition-all focus-within:border-burgundy/40 focus-within:shadow-md">
-      <div className="flex items-center justify-between mb-3 text-xs text-muted">
-        <span className="flex items-center gap-1.5 font-medium text-text-dark/80">
-          <Sparkles className="w-3.5 h-3.5 text-burgundy" />
+    <div className="w-full glass-input rounded-2xl p-6 shadow-2xl transition-all">
+      <div className="flex items-center justify-between mb-3 text-xs text-[#A38F99]">
+        <span className="flex items-center gap-2 font-medium text-[#D8B4BE]">
+          <Sparkles className="w-4 h-4 text-[#F6E8EA]" />
           Dump messy thoughts
         </span>
-        <span>Press <kbd className="bg-canvas px-1.5 py-0.5 rounded border border-rose-soft/60 text-[10px] text-text-dark font-mono">Enter ?</kbd> to sift</span>
+        <span>Press <kbd className="bg-[#2A1117] text-[#D8B4BE] px-2 py-0.5 rounded border border-[#D8B4BE]/30 text-[10px] font-mono">Enter ↵</kbd> to sift</span>
       </div>
 
       <textarea
@@ -60,30 +60,28 @@ export function HeroInput({ onItemAdded }: HeroInputProps) {
         onKeyDown={handleKeyDown}
         placeholder="e.g. Finish ACA landing page tonight, meeting with coach tomorrow at 4, remind me to send the proposal, exam Friday..."
         rows={3}
-        className="w-full bg-transparent resize-none border-0 p-0 text-text-dark placeholder:text-muted/60 text-base focus:ring-0 focus:outline-none leading-relaxed"
+        className="w-full bg-transparent resize-none border-0 p-0 text-[#FCF8F9] placeholder:text-[#A38F99]/50 text-base focus:ring-0 focus:outline-none leading-relaxed"
       />
 
-      <div className="flex items-center justify-between pt-3 mt-2 border-t border-rose-soft/40">
-        <div className="flex gap-2">
-          <span className="text-[11px] text-muted bg-canvas/60 px-2 py-0.5 rounded-md border border-rose-soft/40">
-            Auto-categorizes Tasks, Events, & Reminders
-          </span>
-        </div>
+      <div className="flex items-center justify-between pt-4 mt-2 border-t border-[#D8B4BE]/15">
+        <span className="text-[11px] text-[#A38F99] bg-[#2A1117]/60 px-2.5 py-1 rounded-lg border border-[#D8B4BE]/15">
+          Auto-categorizes Tasks, Events & Ideas
+        </span>
 
         <button
           onClick={() => handleSubmit()}
           disabled={!text.trim() || loading}
-          className="flex items-center gap-1.5 bg-burgundy hover:bg-burgundy-dark text-canvas disabled:opacity-40 disabled:cursor-not-allowed px-4 py-2 rounded-xl text-xs font-medium transition duration-150 shadow-sm"
+          className="flex items-center gap-2 bg-[#F6E8EA] hover:bg-[#FCF8F9] text-[#1A0A0F] font-semibold disabled:opacity-30 disabled:cursor-not-allowed px-5 py-2.5 rounded-xl text-xs transition duration-200 shadow-[0_0_20px_rgba(246,232,234,0.25)] hover:shadow-[0_0_25px_rgba(246,232,234,0.4)]"
         >
           {loading ? (
             <>
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#1A0A0F]" />
               <span>Sifting...</span>
             </>
           ) : (
             <>
               <span>Sift Thoughts</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#1A0A0F]" />
             </>
           )}
         </button>
