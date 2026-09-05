@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Item, ItemPriority, ItemType } from '@/types';
+import React, { useState, useEffect } from 'react';
+import { Item, ItemPriority, ItemType, Project } from '@/types';
 import { formatDateLabel, cn } from '@/lib/utils';
 import { 
   CheckCircle, 
@@ -16,7 +16,8 @@ import {
   Pencil,
   Check,
   X,
-  Pin
+  Pin,
+  Folder
 } from 'lucide-react';
 
 interface ItemCardProps {
@@ -43,11 +44,24 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
   const [title, setTitle] = useState(item.title);
   const [type, setType] = useState<ItemType>(item.type as ItemType);
   const [priority, setPriority] = useState<ItemPriority>(item.priority as ItemPriority);
+  const [projectId, setProjectId] = useState<string | null>(item.projectId || null);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [dueDate, setDueDate] = useState(item.dueDate ? item.dueDate.slice(0, 16) : '');
   const [saving, setSaving] = useState(false);
 
   const isDone = item.status === 'DONE';
   const Icon = typeIcons[item.type as ItemType] || CheckCircle;
+
+  useEffect(() => {
+    if (isEditing && projects.length === 0) {
+      fetch('/api/projects')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) setProjects(data.data);
+        })
+        .catch(() => {});
+    }
+  }, [isEditing, projects.length]);
 
   const handleToggleFocus = async () => {
     const nextFocused = !item.isFocused;
@@ -72,6 +86,7 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
       title: title.trim(),
       type,
       priority,
+      projectId: projectId || null,
       dueDate: dueDate ? new Date(dueDate).toISOString() : null,
     };
 
@@ -98,6 +113,7 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
     setTitle(item.title);
     setType(item.type as ItemType);
     setPriority(item.priority as ItemPriority);
+    setProjectId(item.projectId || null);
     setDueDate(item.dueDate ? item.dueDate.slice(0, 16) : '');
     setIsEditing(false);
   };
@@ -115,6 +131,7 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
         />
 
         <div className="flex flex-wrap items-center gap-2 text-xs">
+          {/* Type Selector */}
           <div className="flex items-center gap-1 bg-surface/60 border border-border rounded-lg p-1">
             <span className="text-[10px] text-muted font-mono px-1">TYPE:</span>
             <select
@@ -130,6 +147,7 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
             </select>
           </div>
 
+          {/* Priority Selector */}
           <div className="flex items-center gap-1 bg-surface/60 border border-border rounded-lg p-1">
             <span className="text-[10px] text-muted font-mono px-1">PRIORITY:</span>
             <select
@@ -145,6 +163,24 @@ export function ItemCard({ item, onToggleStatus, onDelete, onUpdate }: ItemCardP
             </select>
           </div>
 
+          {/* Project Selector */}
+          <div className="flex items-center gap-1 bg-surface/60 border border-border rounded-lg p-1">
+            <Folder className="w-3 h-3 text-accent ml-1" />
+            <select
+              value={projectId || ''}
+              onChange={(e) => setProjectId(e.target.value || null)}
+              className="bg-transparent text-foreground text-xs font-semibold focus:outline-none cursor-pointer max-w-[120px] truncate"
+            >
+              <option value="" className="bg-surface text-foreground">No Project</option>
+              {projects.map((proj) => (
+                <option key={proj.id} value={proj.id} className="bg-surface text-foreground">
+                  {proj.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Date Selector */}
           <input
             type="datetime-local"
             value={dueDate}

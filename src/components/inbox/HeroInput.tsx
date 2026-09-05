@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowUpRight, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowUpRight, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 
 interface HeroInputProps {
   onItemAdded?: () => void;
@@ -10,12 +10,15 @@ interface HeroInputProps {
 export function HeroInput({ onItemAdded }: HeroInputProps) {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!text.trim() || loading) return;
 
     setLoading(true);
+    setErrorMsg(null);
+
     try {
       const res = await fetch('/api/sift', {
         method: 'POST',
@@ -29,9 +32,12 @@ export function HeroInput({ onItemAdded }: HeroInputProps) {
         if (onItemAdded) {
           onItemAdded();
         }
+      } else {
+        setErrorMsg(data.error || 'Failed to sift text. Your text was preserved.');
       }
     } catch (err) {
       console.error('Error sifting text:', err);
+      setErrorMsg('Network drop detected. Your text was preserved below.');
     } finally {
       setLoading(false);
     }
@@ -45,13 +51,13 @@ export function HeroInput({ onItemAdded }: HeroInputProps) {
   };
 
   return (
-    <div className="w-full glass-input rounded-2xl p-6 shadow-2xl transition-all">
-      <div className="flex items-center justify-between mb-3 text-xs text-muted">
+    <div className="w-full glass-input rounded-2xl p-5 shadow-2xl transition-all space-y-3">
+      <div className="flex items-center justify-between text-xs text-muted">
         <span className="flex items-center gap-2 font-medium text-accent">
           <Sparkles className="w-4 h-4 text-primary" />
           Dump messy thoughts
         </span>
-        <span>Press <kbd className="bg-surface text-accent px-2 py-0.5 rounded border border-border/30 text-[10px] font-mono">Enter ↵</kbd> to sift</span>
+        <span className="hidden sm:inline">Press <kbd className="bg-surface text-accent px-2 py-0.5 rounded border border-border text-[10px] font-mono">Enter ↵</kbd> to sift</span>
       </div>
 
       <textarea
@@ -63,15 +69,22 @@ export function HeroInput({ onItemAdded }: HeroInputProps) {
         className="w-full bg-transparent resize-none border-0 p-0 text-foreground placeholder:text-muted/50 text-base focus:ring-0 focus:outline-none leading-relaxed"
       />
 
-      <div className="flex items-center justify-between pt-4 mt-2 border-t border-border/15">
-        <span className="text-[11px] text-muted bg-surface/60 px-2.5 py-1 rounded-lg border border-border/15">
+      {errorMsg && (
+        <div className="flex items-center gap-2 text-xs text-rose-300 bg-rose-950/60 p-2.5 rounded-xl border border-rose-500/30">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between pt-3 border-t border-border">
+        <span className="text-[11px] text-muted bg-surface/60 px-2.5 py-1 rounded-lg border border-border">
           Auto-categorizes Tasks, Events & Ideas
         </span>
 
         <button
           onClick={() => handleSubmit()}
           disabled={!text.trim() || loading}
-          className="flex items-center gap-2 bg-primary hover:bg-[#FCF8F9] text-inverse font-semibold disabled:opacity-30 disabled:cursor-not-allowed px-5 py-2.5 rounded-xl text-xs transition duration-200 shadow-[0_0_20px_color-mix(in_srgb,var(--primary)_25%,transparent)] hover:shadow-[0_0_25px_rgba(246,232,234,0.4)]"
+          className="flex items-center gap-2 bg-primary hover:opacity-90 text-inverse font-semibold disabled:opacity-30 disabled:cursor-not-allowed px-5 py-2.5 rounded-xl text-xs transition duration-200 shadow-sm"
         >
           {loading ? (
             <>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, X, CheckCircle2, Calendar, Lightbulb, Bell, FileText, Tag, Loader2, ArrowRight } from 'lucide-react';
+import { Search, X, CheckCircle2, Calendar, Lightbulb, Bell, FileText, Tag, Loader2, ArrowRight, Sparkles } from 'lucide-react';
 import { Item, ItemType } from '@/types';
 import { cn, formatDateLabel } from '@/lib/utils';
 
@@ -34,6 +34,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const [typeFilter, setTypeFilter] = useState('all');
   const [results, setResults] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sifting, setSifting] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -58,14 +59,12 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
     }
   }, []);
 
-  // Debounced search
   useEffect(() => {
     if (!open) return;
     const t = setTimeout(() => runSearch(query, typeFilter), 180);
     return () => clearTimeout(t);
   }, [query, typeFilter, open, runSearch]);
 
-  // Focus input when opened
   useEffect(() => {
     if (open) {
       setQuery('');
@@ -75,7 +74,28 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
     }
   }, [open, runSearch]);
 
-  // Keyboard navigation
+  const handleQuickSift = async () => {
+    if (!query.trim() || sifting) return;
+    setSifting(true);
+    try {
+      const res = await fetch('/api/sift', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: query, autoSave: true }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        onClose();
+        router.push('/workspace');
+        router.refresh();
+      }
+    } catch (err) {
+      console.error('Quick sift error:', err);
+    } finally {
+      setSifting(false);
+    }
+  };
+
   useEffect(() => {
     if (!open) return;
 
@@ -101,7 +121,6 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
   const handleSelect = (item: Item) => {
     onClose();
-    // Navigate based on type
     if (item.type === 'TASK') router.push('/tasks');
     else if (item.type === 'EVENT' || item.type === 'REMINDER') router.push('/schedule');
     else router.push('/inbox');
@@ -111,35 +130,43 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-[12vh] px-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Palette panel */}
-      <div className="relative w-full max-w-xl glass-panel rounded-2xl shadow-2xl overflow-hidden border border-border/25 animate-in fade-in zoom-in-95 duration-150">
-        {/* Search input */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border/15">
+      <div className="relative w-full max-w-xl glass-panel rounded-2xl shadow-2xl overflow-hidden border border-border animate-in fade-in zoom-in-95 duration-150">
+        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border">
           <Search className="w-4 h-4 text-accent shrink-0" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search tasks, events, ideas..."
+            placeholder="Search workspace or type a thought to sift..."
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted/60 focus:outline-none"
           />
           {loading && <Loader2 className="w-4 h-4 text-accent animate-spin" />}
-          <button
-            onClick={onClose}
-            className="p-1 text-muted hover:text-foreground rounded-md transition"
-          >
+          <button onClick={onClose} className="p-1 text-muted hover:text-foreground rounded-md transition">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Type filters */}
-        <div className="flex items-center gap-1.5 px-3 py-2.5 border-b border-border/10 overflow-x-auto">
+        {/* Quick Sift Action Row if user typed query */}
+        {query.trim().length > 2 && (
+          <button
+            onClick={handleQuickSift}
+            disabled={sifting}
+            className="w-full flex items-center justify-between px-4 py-2.5 bg-primary/10 hover:bg-primary/20 border-b border-border text-xs text-primary transition"
+          >
+            <span className="flex items-center gap-2 font-medium truncate">
+              <Sparkles className="w-3.5 h-3.5 shrink-0 text-accent" />
+              <span>Sift &quot;{query}&quot; as new thought</span>
+            </span>
+            <span className="text-[10px] font-mono text-accent">
+              {sifting ? 'Sifting...' : 'Click to Sift ↵'}
+            </span>
+          </button>
+        )}
+
+        {/* Type Filter Tabs */}
+        <div className="flex items-center gap-1.5 px-3 py-2 border-b border-border/50 overflow-x-auto">
           {FILTERS.map((f) => (
             <button
               key={f.key}
@@ -148,7 +175,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                 'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition whitespace-nowrap',
                 typeFilter === f.key
                   ? 'bg-primary text-inverse'
-                  : 'text-muted hover:text-foreground hover:bg-surface/80'
+                  : 'text-muted hover:text-foreground hover:bg-surface'
               )}
             >
               {f.label}
@@ -156,8 +183,8 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
           ))}
         </div>
 
-        {/* Results */}
-        <div className="max-h-[50vh] overflow-y-auto py-2">
+        {/* Results Stream */}
+        <div className="max-h-[45vh] overflow-y-auto py-1">
           {results.length === 0 && !loading && (
             <div className="px-4 py-10 text-center">
               <p className="text-sm text-muted">
@@ -177,14 +204,14 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                 onMouseEnter={() => setSelectedIndex(idx)}
                 className={cn(
                   'w-full flex items-center gap-3 px-4 py-2.5 text-left transition',
-                  isSelected ? 'bg-primary/10' : 'hover:bg-surface/50'
+                  isSelected ? 'bg-surface/80' : 'hover:bg-surface/40'
                 )}
               >
                 <div className={cn(
-                  'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
-                  isSelected ? 'bg-primary/20' : 'bg-surface/80'
+                  'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-border',
+                  isSelected ? 'bg-primary text-inverse' : 'bg-surface text-accent'
                 )}>
-                  <Icon className="w-3.5 h-3.5 text-accent" />
+                  <Icon className="w-3.5 h-3.5" />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -214,12 +241,11 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
           })}
         </div>
 
-        {/* Footer hints */}
-        <div className="flex items-center justify-between px-4 py-2 border-t border-border/10 text-[10px] text-muted">
+        <div className="flex items-center justify-between px-4 py-2 border-t border-border text-[10px] text-muted">
           <div className="flex items-center gap-3">
-            <span><kbd className="px-1 py-0.5 rounded bg-surface border border-border/20 font-mono">↑↓</kbd> navigate</span>
-            <span><kbd className="px-1 py-0.5 rounded bg-surface border border-border/20 font-mono">↵</kbd> open</span>
-            <span><kbd className="px-1 py-0.5 rounded bg-surface border border-border/20 font-mono">esc</kbd> close</span>
+            <span><kbd className="px-1 py-0.5 rounded bg-surface border border-border font-mono">↑↓</kbd> navigate</span>
+            <span><kbd className="px-1 py-0.5 rounded bg-surface border border-border font-mono">↵</kbd> select</span>
+            <span><kbd className="px-1 py-0.5 rounded bg-surface border border-border font-mono">esc</kbd> close</span>
           </div>
           <span>{results.length} result{results.length !== 1 ? 's' : ''}</span>
         </div>

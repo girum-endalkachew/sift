@@ -12,15 +12,15 @@ export function formatDateLabel(dateString: string | null): string {
 
   const now = new Date();
 
-  // Midnight comparison for calendar day check
+  // Midnight comparison
   const dStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   const nowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const diffDays = Math.round((dStart.getTime() - nowStart.getTime()) / (1000 * 3600 * 24));
 
-  // Time extraction
-  const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0;
-  const timeStr = hasTime
+  // Only display time if it wasn't defaulted to midnight 00:00
+  const hasExplicitTime = date.getHours() !== 0 || date.getMinutes() !== 0;
+  const timeStr = hasExplicitTime
     ? date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
     : '';
 
