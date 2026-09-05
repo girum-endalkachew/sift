@@ -1,15 +1,24 @@
 import { AIProvider, EnrichedAIItem } from './types';
 import { GeminiProvider } from './gemini';
+import { GroqProvider } from './groq';
 
 export function getAIProvider(): AIProvider | null {
-  const providerName = (process.env.AI_PROVIDER || 'none').toLowerCase();
+  const providerName = (process.env.AI_PROVIDER || '').toLowerCase();
 
-  switch (providerName) {
-    case 'gemini':
-      return new GeminiProvider();
-    default:
-      return null; // Uses deterministic engine only
+  if (
+    providerName === 'groq' ||
+    process.env.GROQ_API_KEY_1 ||
+    process.env.GROQ_API_KEY_2 ||
+    process.env.GROQ_API_KEY
+  ) {
+    return new GroqProvider();
   }
+
+  if (providerName === 'gemini' || process.env.GEMINI_API_KEY) {
+    return new GeminiProvider();
+  }
+
+  return null;
 }
 
 export async function enrichWithAI(rawText: string): Promise<EnrichedAIItem[] | null> {
